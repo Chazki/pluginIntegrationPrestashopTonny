@@ -1,2 +1,2 @@
-# Plugin Chazki para Prestashop 1.7.8
+# pluginIntegrationPrestashopTonny
 Plugin de Prestashop 1.7.8 de Chazki para la integración con Nintendo
