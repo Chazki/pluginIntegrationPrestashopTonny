@@ -11,5 +11,5 @@ let output = fs.createWriteStream(`${dir}/${dirCompress}.zip`);
 let archive = archiver('zip');
 
 archive.pipe(output);
-archive.directory(`./${dirCompress}`, false);
+archive.directory(`./${dirCompress}`, `${dirCompress}`);
 archive.finalize();
