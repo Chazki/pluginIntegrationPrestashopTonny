@@ -148,11 +148,17 @@ class Integration_chazki extends CarrierModule
 
     public function hookActionValidateOrder($params)
     {
-        $new_order = new ChazkiOrders($this);
-
-        if($new_order->validateOrder()) {
-            $new_order->generateOrder($params);
-        }
+        $order = $params['order'];
+        
+        $address_id = $order->$id_address_delivery;
+        ChazkiCollector::get('addresses', (string)$address_id, 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        // $customer_id = $order->$id_customer;
+        // $shop_address1 = Configuration::get('PS_SHOP_ADDR1');
+        // $shop_address2 = Configuration::get('PS_SHOP_ADDR2');
+        // $shop_contac_phone = Configuration::get('PS_SHOP_PHONE');
+        // $shop_city = Configuration::get('PS_SHOP_CITY');
+        // $shop_zipcode = Configuration::get('PS_SHOP_CODE');
+        // $shop_email = Configuration::get('PS_SHOP_EMAIL');
     }
 
     public function hookActionCarrierUpdate($params)
