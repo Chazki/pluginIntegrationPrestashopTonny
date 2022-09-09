@@ -1,0 +1,15 @@
+{
+  "name": "pluginIntegrationPrestashopTonny",
+  "version": "1.0.0",
+  "description": "Plugin de Prestashop 1.7.8 de Chazki para la integración con Nintendo",
+  "main": "index.js",
+  "repository": "git@github.com:Chazki/pluginIntegrationPrestashopTonny.git",
+  "author": "Chazki",
+  "license": "MIT",
+  "scripts": {
+    "compress": "node index.js"
+  },
+  "dependencies": {
+    "archiver": "^5.3.1"
+  }
+}
