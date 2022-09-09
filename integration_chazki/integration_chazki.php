@@ -31,6 +31,7 @@ if (!defined('_PS_VERSION_')) {
 require_once(dirname(__FILE__).'/classes/ChazkiInstallCarrier.php');
 require_once(dirname(__FILE__).'/classes/ChazkiInstallPanel.php');
 require_once(dirname(__FILE__).'/classes/ChazkiUninstall.php');
+require_once(dirname(__FILE__).'/classes/ChazkiCollector.php');
 require_once(dirname(__FILE__).'/classes/ChazkiHelper.php');
 require_once(dirname(__FILE__).'/classes/ChazkiApi.php');
 require_once(dirname(__FILE__).'/classes/ChazkiShippingCost.php');
