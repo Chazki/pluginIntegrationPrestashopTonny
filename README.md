@@ -22,4 +22,4 @@ After making your changes run the following command:
 yarn compress
 ```
 
-Install plugin in test store.
+Install plugin in test store, which is located in the "./dist directory" .
