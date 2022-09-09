@@ -150,8 +150,9 @@ class Integration_chazki extends CarrierModule
     {
         $order = $params['order'];
         
-        $address_id = $order->$id_address_delivery;
-        ChazkiCollector::get('addresses', (string)$address_id, 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $address_id = $order->id_address_delivery;
+        ChazkiCollector::get('addresses', strval($address_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        
         // $customer_id = $order->$id_customer;
         // $shop_address1 = Configuration::get('PS_SHOP_ADDR1');
         // $shop_address2 = Configuration::get('PS_SHOP_ADDR2');

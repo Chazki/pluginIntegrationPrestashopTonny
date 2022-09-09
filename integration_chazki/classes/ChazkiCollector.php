@@ -31,10 +31,52 @@ class ChazkiCollector
         $this->module = $module;
     }
 
-    public function get($resource, $resource_id, $chazkiAccess)
+    public function getAddress($resource_id, $chazkiAccess)
     {
         $curl = curl_init();
-        $url = 'http://localhost/tienda-prueba-ps/api/' . $resource . '/' . $resource_id . '?output_format=JSON';
+        $url = 'http://localhost/tienda-prueba-ps/api/addresses/' . $resource_id . '?output_format=JSON';
+        curl_setopt_array($curl, array(
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
+            CURLOPT_HEADER => 1,
+            CURLOPT_USERPWD => $chazkiAccess . ":''",
+        ));
+
+        $response = curl_exec($curl);
+
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+
+        die();
+    }
+
+    public function getCustomers($resource_id, $chazkiAccess)
+    {
+        $curl = curl_init();
+        $url = 'http://localhost/tienda-prueba-ps/api/customers/' . $resource_id . '?output_format=JSON';
+        curl_setopt_array($curl, array(
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
+            CURLOPT_HEADER => 1,
+            CURLOPT_USERPWD => $chazkiAccess . ":''",
+        ));
+
+        $response = curl_exec($curl);
+
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+
+        die();
+    }
+
+    public function getOrderDet($resource_id, $chazkiAccess)
+    {
+        $curl = curl_init();
+        $url = 'http://localhost/tienda-prueba-ps/api/order_details/' . $resource_id . '?output_format=JSON';
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $url,
