@@ -39,6 +39,31 @@ class ChazkiInstallCarrier
     }
 
     /**
+     * enables webservice
+     *
+     * @return void
+     * @throws PrestaShopDatabaseException
+     */
+
+    public function enableWebService()
+    {
+        ChazkiHelper::updateValue('PS_WEBSERVICE', 1);
+
+        $chazkiAccess = new WebserviceKey();
+        $chazkiAccess->key = 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5';
+        $chazkiAccess->save();
+
+        $permissions = [
+            'customers' => ['GET' => 1, 'POST' => 1, 'PUT' => 1, 'DELETE' => 1, 'HEAD' => 1],
+            'orders' => ['GET' => 1, 'POST' => 1, 'PUT' => 1, 'DELETE' => 1, 'HEAD' => 1],
+            'addresses' => ['GET' => 1, 'POST' => 1, 'PUT' => 1, 'DELETE' => 1, 'HEAD' => 1],
+            'order_details' => ['GET' => 1, 'POST' => 1, 'PUT' => 1, 'DELETE' => 1, 'HEAD' => 1],
+        ];
+
+        WebserviceKey::setPermissionForAccount($chazkiAccess->id, $permissions);
+    }
+
+    /**
      * install carriers
      *
      * @return void

@@ -68,7 +68,8 @@ class Integration_chazki extends CarrierModule
      */
     public function install()
     {
-        $this->chazki_carrier->installCarriers();
+        $this->chazki_install->installCarriers();
+        $this->chazki_install->enableWebService();
         
         Configuration::updateValue('INTEGATION_CHAZKI_LIVE_MODE', false);
 
