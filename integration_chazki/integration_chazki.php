@@ -84,8 +84,8 @@ class Integration_chazki extends CarrierModule
         Configuration::deleteByName('INTEGATION_CHAZKI_LIVE_MODE');
 
         include(dirname(__FILE__).'/sql/uninstall.php');
-        /*$chazki_uninstall = new ChazkiUninstall();
-        $chazki_uninstall->uninstall();*/
+        //$chazki_uninstall = new ChazkiUninstall($this);
+        //$chazki_uninstall->uninstall();
 
         return parent::uninstall();
     }
@@ -114,7 +114,7 @@ class Integration_chazki extends CarrierModule
 
     public function getOrderShippingCostExternal($params)
     {
-        return this->getOrderShippingCost($params, 0);
+        return $this->getOrderShippingCost($params, 0);
     }
 
     /**
