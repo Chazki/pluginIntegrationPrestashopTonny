@@ -33,15 +33,19 @@ class ChazkiUninstall
 
     public function uninstall()
     {
-        $carrier_obj = Carrier::getCarrierByReference(ChazkiHelper::get(strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_SERVICE_NAME)));
+        $carrier_obj = Carrier::getCarrierByReference(
+            ChazkiHelper::get(
+                Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_SERVICE_NAME)
+            )
+        );
         if (Validate::isLoadedObject($carrier_obj)) {
             $carrier_obj->delete();
             $carrier_obj->deleted = 1;
             $carrier_obj->update();
         }
         
-        Configuration::deleteByName(strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_API_KEY_NAME));
-        Configuration::deleteByName(strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_BRANCH_ID_NAME));
-        Configuration::deleteByName(strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_SERVICE_NAME));
+        Configuration::deleteByName(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_API_KEY_NAME));
+        Configuration::deleteByName(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_BRANCH_ID_NAME));
+        Configuration::deleteByName(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_SERVICE_NAME));
     }
 }

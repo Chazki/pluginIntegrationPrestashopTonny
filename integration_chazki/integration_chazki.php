@@ -114,7 +114,7 @@ class Integration_chazki extends CarrierModule
 
     public function getOrderShippingCostExternal($params)
     {
-        return getOrderShippingCost($params, 0);
+        return this->getOrderShippingCost($params, 0);
     }
 
     /**

@@ -48,13 +48,13 @@ class ChazkiInstallPanel
         $output = '';
 
         if (((bool)Tools::isSubmit('submit' . self::MODULE_NAME)) == true) {
-            $api_key = trim((string)Tools::getValue(strtoupper(_DB_PREFIX_.self::MODULE_API_KEY_NAME)));
-            $branch_id = trim((string)Tools::getValue(strtoupper(_DB_PREFIX_.self::MODULE_BRANCH_ID_NAME)));
-            $service_id = trim((string)Tools::getValue(strtoupper(_DB_PREFIX_.self::MODULE_SERVICE_NAME)));
+            $api_key = trim((string)Tools::getValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_API_KEY_NAME)));
+            $branch_id = trim((string)Tools::getValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_BRANCH_ID_NAME)));
+            $service_id = trim((string)Tools::getValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_SERVICE_NAME)));
             if ($api_key) {
-                ChazkiHelper::updateValue(strtoupper(_DB_PREFIX_.self::MODULE_API_KEY_NAME), $api_key);
-                ChazkiHelper::updateValue(strtoupper(_DB_PREFIX_.self::MODULE_BRANCH_ID_NAME), $branch_id);
-                ChazkiHelper::updateValue(strtoupper(_DB_PREFIX_.self::MODULE_SERVICE_NAME), $service_id);
+                ChazkiHelper::updateValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_API_KEY_NAME), $api_key);
+                ChazkiHelper::updateValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_BRANCH_ID_NAME), $branch_id);
+                ChazkiHelper::updateValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_SERVICE_NAME), $service_id);
             } else {
                 ChazkiHelper::setNotification(
                     $this->module->l('The entered API key is not accepted Spring GDS, contact your manager'),
@@ -63,7 +63,7 @@ class ChazkiInstallPanel
             }
         }
 
-        $api_id = ChazkiHelper::get(strtoupper(_DB_PREFIX_ . self::MODULE_API_KEY_NAME));
+        $api_id = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . self::MODULE_API_KEY_NAME));
 
         if ($api_id) {
             $this->getSettings();
@@ -98,14 +98,14 @@ class ChazkiInstallPanel
     protected function displaySettingsApiForm()
     {
         // Get default language
-        $default_lang = (int)ChazkiHelper::get('PS_LANG_DEFAULT');
-        $api_key = ChazkiHelper::get(strtoupper(_DB_PREFIX_ . self::MODULE_API_KEY_NAME));
-        $branch_id = ChazkiHelper::get(strtoupper(_DB_PREFIX_ . self::MODULE_BRANCH_ID_NAME));
-        $service_id = ChazkiHelper::get(strtoupper(_DB_PREFIX_ . self::MODULE_SERVICE_NAME));
+        //$default_lang = (int)ChazkiHelper::get('PS_LANG_DEFAULT');
+        $api_key = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . self::MODULE_API_KEY_NAME));
+        $branch_id = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . self::MODULE_BRANCH_ID_NAME));
+        $service_id = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . self::MODULE_SERVICE_NAME));
         $api_key_msg = $this->module->l('You can obtain an API key by contacting us at Chazki');
 
         // Init Fields form array
-        $fields_form = $this->getConfigForm();
+        $fields_form = $this->getConfigForm($api_key_msg);
 
         $helper = new HelperForm();
 
@@ -139,10 +139,10 @@ class ChazkiInstallPanel
         );
 
         // Load current value
-        $helper->fields_value[strtoupper(_DB_PREFIX_.self::IS_API_SETTINGS_TAB)] = 1;
-        $helper->fields_value[strtoupper(_DB_PREFIX_.self::MODULE_API_KEY_NAME)] = $api_key;
-        $helper->fields_value[strtoupper(_DB_PREFIX_.self::MODULE_BRANCH_ID_NAME)] = $branch_id;
-        $helper->fields_value[strtoupper(_DB_PREFIX_.self::MODULE_SERVICE_NAME)] = $service_id;
+        $helper->fields_value[Tools::strtoupper(_DB_PREFIX_.self::IS_API_SETTINGS_TAB)] = 1;
+        $helper->fields_value[Tools::strtoupper(_DB_PREFIX_.self::MODULE_API_KEY_NAME)] = $api_key;
+        $helper->fields_value[Tools::strtoupper(_DB_PREFIX_.self::MODULE_BRANCH_ID_NAME)] = $branch_id;
+        $helper->fields_value[Tools::strtoupper(_DB_PREFIX_.self::MODULE_SERVICE_NAME)] = $service_id;
 
         return $helper->generateForm($fields_form);
     }
@@ -150,7 +150,7 @@ class ChazkiInstallPanel
     /**
      * Create the structure of your form.
      */
-    protected function getConfigForm()
+    protected function getConfigForm($api_key_msg)
     {
         return array(
             array(
@@ -167,15 +167,15 @@ class ChazkiInstallPanel
                         ),
                         array(
                             'type' => 'text',
-                            'name' => strtoupper(_DB_PREFIX_.self::MODULE_API_KEY_NAME),
+                            'name' => Tools::strtoupper(_DB_PREFIX_.self::MODULE_API_KEY_NAME),
                             'label' => $this->module->l('Enterprise Key'),
                             'maxlength' => 255,
                             'required' => true
                         ),
                         array(
                             'type' => 'select',
-                            'name' => strtoupper(_DB_PREFIX_.self::MODULE_SERVICE_NAME),
-                            'id' => strtoupper(_DB_PREFIX_.self::MODULE_SERVICE_NAME),
+                            'name' => Tools::strtoupper(_DB_PREFIX_.self::MODULE_SERVICE_NAME),
+                            'id' => Tools::strtoupper(_DB_PREFIX_.self::MODULE_SERVICE_NAME),
                             'label' => $this->module->l('Servicio'),
                             'options' => array(
                                 'query' => self::$services_types,
@@ -186,10 +186,10 @@ class ChazkiInstallPanel
                         ),
                         array(
                             'type' => 'text',
-                            'name' => strtoupper(_DB_PREFIX_.self::MODULE_BRANCH_ID_NAME),
+                            'name' => Tools::strtoupper(_DB_PREFIX_.self::MODULE_BRANCH_ID_NAME),
                             'label' => $this->module->l('Codigo Sucursal'),
                             'maxlength' => 255,
-                            'required' => FALSE
+                            'required' => false
                         ),
                     ),
                     'submit' => array(

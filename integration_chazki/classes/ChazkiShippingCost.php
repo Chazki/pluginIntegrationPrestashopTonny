@@ -34,11 +34,11 @@ class ChazkiShippingCost
         $this->context = Context::getContext();
     }
 
-	public function loadCity($cart)
-	{
-		$address = new Address($cart->id_address_delivery);
-		$this->city = $address->city;
-	}
+    public function loadCity($cart)
+    {
+        $address = new Address($cart->id_address_delivery);
+        $this->city = $address->city;
+    }
 
     protected static function sendChazki($postUrl, $params)
     {
@@ -56,14 +56,13 @@ class ChazkiShippingCost
 
         $response = curl_exec($curl);
 
-        $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        //$http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
     }
 
     protected function getShippingCost($cart)
     {
-        if (extension_loaded('curl') == false)
-        {
+        if (extension_loaded('curl') == false) {
             $this->_errors[] = $this->l('You have to enable the cURL extension on your server to install this module');
             return false;
         }
@@ -76,6 +75,6 @@ class ChazkiShippingCost
     {
         $this->loadCity($cart);
         $this->getShippingCost($cart);
-        return 30;
+        return 30 + $shipping_fees;
     }
 }

@@ -83,8 +83,9 @@ class ChazkiInstallCarrier
     protected function addCarrier($name, $key)
     {
         $key = Tools::strtoupper($key);
-        $id_reference = \Db::getInstance()->getValue($s=
-            "SELECT value FROM " . _DB_PREFIX_ . "configuration WHERE name LIKE '" . pSQL($key) .
+        $id_reference = \Db::getInstance()->getValue(
+            "SELECT value FROM "._DB_PREFIX_.
+            "configuration WHERE name LIKE '".pSQL($key).
             "' ORDER BY id_configuration DESC"
         );
         $carrier = Carrier::getCarrierByReference($id_reference);
@@ -98,10 +99,10 @@ class ChazkiInstallCarrier
         $carrier->delay = array();
         $carrier->url = self::CHAZKI_TRACKING_URL_CARRIER;
         $carrier->external_module_name = 'integration_chazki';
-        $carrier->active = TRUE;
+        $carrier->active = true;
         $carrier->shipping_external = true;
-        $carrier->is_module = TRUE;
-        $carrier->need_range = TRUE;
+        $carrier->is_module = true;
+        $carrier->need_range = true;
 
         foreach (Language::getLanguages() as $lang) {
             $id_lang = (int)$lang['id_lang'];
@@ -115,8 +116,8 @@ class ChazkiInstallCarrier
             );
 
             $id_reference = (int) $carrier->id_reference ?: (int) $carrier->id;
-            Configuration::updateValue(strtoupper(_DB_PREFIX_ . $key), $carrier->id);
-            Configuration::updateValue(strtoupper(_DB_PREFIX_ . $key . '_reference'), $carrier->id);
+            Configuration::updateValue(Tools::strtoupper(_DB_PREFIX_ . $key), $carrier->id);
+            Configuration::updateValue(Tools::strtoupper(_DB_PREFIX_ . $key . '_reference'), $carrier->id);
 
             $this->addGroups($carrier);
             $this->addRanges($carrier);
@@ -199,17 +200,17 @@ class ChazkiInstallCarrier
         foreach ($zones as $zone) {
             $carrier->addZone($zone['id_zone']);
             $carrier->addDeliveryPrice(array(
-                'id_carrier' => $carrier->id, 
-                'id_range_price' => (int) $rangePrice->id, 
-                'id_range_weight' => NULL, 
-                'id_zone' => (int) $zone['id_zone'], 
+                'id_carrier' => $carrier->id,
+                'id_range_price' => (int) $rangePrice->id,
+                'id_range_weight' => null,
+                'id_zone' => (int) $zone['id_zone'],
                 'price' => '25'
             ));
             $carrier->addDeliveryPrice(array(
-                'id_carrier' => $carrier->id, 
-                'id_range_price' => NULL, 
-                'id_range_weight' => (int) $rangeWeight->id, 
-                'id_zone' => (int) $zone['id_zone'], 
+                'id_carrier' => $carrier->id,
+                'id_range_price' => null,
+                'id_range_weight' => (int) $rangeWeight->id,
+                'id_zone' => (int) $zone['id_zone'],
                 'price' => '25'
             ));
         }

@@ -104,16 +104,15 @@ class ChazkiHelper
     }
 
     /**
-     * Console log 
+     * Console log
      * @param $msg
      * @param $with_script_tags
      */
     public static function consoleLog($msg, $with_script_tags = true)
     {
-        $js_code = 'console.log(' . json_encode($this, JSON_HEX_TAG) . ');';
+        $js_code = 'console.log(' . json_encode($msg, JSON_HEX_TAG) . ');';
 
-        if ($with_script_tags)
-        {
+        if ($with_script_tags) {
             $js_code = '<script>' . $js_code . '</script>';
         }
 
