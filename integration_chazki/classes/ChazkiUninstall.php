@@ -43,9 +43,11 @@ class ChazkiUninstall
             $carrier_obj->deleted = 1;
             $carrier_obj->update();
         }
-        
+
+        Configuration::deleteByName('INTEGATION_CHAZKI_LIVE_MODE');
         Configuration::deleteByName(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_API_KEY_NAME));
         Configuration::deleteByName(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_BRANCH_ID_NAME));
         Configuration::deleteByName(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_SERVICE_NAME));
+        Configuration::deleteByName(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_SERVICE_NAME . '_REFERENCE'));
     }
 }

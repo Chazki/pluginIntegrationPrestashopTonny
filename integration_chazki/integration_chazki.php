@@ -81,11 +81,8 @@ class Integration_chazki extends CarrierModule
 
     public function uninstall()
     {
-        Configuration::deleteByName('INTEGATION_CHAZKI_LIVE_MODE');
-
-        include(dirname(__FILE__).'/sql/uninstall.php');
-        //$chazki_uninstall = new ChazkiUninstall($this);
-        //$chazki_uninstall->uninstall();
+        $chazki_uninstall = new ChazkiUninstall($this);
+        $chazki_uninstall->uninstall();
 
         return parent::uninstall();
     }
