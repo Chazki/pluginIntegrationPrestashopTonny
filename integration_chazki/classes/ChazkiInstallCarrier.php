@@ -24,11 +24,10 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class ChazkiInstall
+class ChazkiInstallCarrier
 {
     public static $chazki_services = array(
-        'SAME_DAY' => 'Chazki - Same Day',
-        'NEXT_DAY' => 'Chazki - Next Day'
+        'CHAZKI_SERVICE' => 'Chazki',
     );
 
     const CHAZKI_TRACKING_URL_CARRIER = 'https://nintendo-dev.chazki.com/trackcodeTracking/@';
@@ -111,16 +110,13 @@ class ChazkiInstall
 
         if ($carrier->add()) {
             @copy(
-                dirname(__FILE__) . '/logo.png',
+                dirname(__FILE__, 2) . '/views/img/logoChazki.jpg',
                 _PS_SHIP_IMG_DIR_ . DIRECTORY_SEPARATOR . (int)$carrier->id . '.jpg'
             );
 
             $id_reference = (int) $carrier->id_reference ?: (int) $carrier->id;
-            /*\Db::getInstance()->query(
-                "INSERT " . _DB_PREFIX_ . "configuration SET name='" . pSQL($key) . "', value=$id_reference"
-            );*/
-            Configuration::updateValue(_DB_PREFIX_ . $key, $carrier->id);
-            Configuration::updateValue(_DB_PREFIX_ . $key . '_reference', $carrier->id);
+            Configuration::updateValue(strtoupper(_DB_PREFIX_ . $key), $carrier->id);
+            Configuration::updateValue(strtoupper(_DB_PREFIX_ . $key . '_reference'), $carrier->id);
 
             $this->addGroups($carrier);
             $this->addRanges($carrier);
@@ -176,8 +172,7 @@ class ChazkiInstall
             $sql .= '(' . (int)$carrier->id . ', ' . (int)$id_group . '),';
         }
 
-        return Db::getInstance()
-            ->execute(rtrim($sql, ','));
+        return Db::getInstance()->execute(rtrim($sql, ','));
     }
 
     protected function addRanges($carrier)
