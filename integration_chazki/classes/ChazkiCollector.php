@@ -94,4 +94,22 @@ class ChazkiCollector
 
         return $response;
     }
+
+    public function updateOrderStatus($resource_id, $chazkiAccess)
+    {
+        $curl = curl_init();
+        $url = 'http://localhost/tienda-prueba-ps/api/order_details/' . $resource_id . '?output_format=JSON';
+        curl_setopt_array($curl, array(
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
+            CURLOPT_USERPWD => $chazkiAccess . ":''",
+            CURLOPT_CUSTOMREQUEST => "PUT",
+            CURLOPT_POSTFIELDS => $data)
+        );
+
+        $response = curl_exec($curl);
+
+        return $response;
+    }
 }

@@ -149,6 +149,7 @@ class Integration_chazki extends CarrierModule
     public function hookActionValidateOrder($params)
     {
         $orderObj = $params['order'];
+        $orderStatusObj = $params['orderStatus'];
         
         $address_id = $orderObj->id_address_delivery;
         $address = ChazkiCollector::getAddress(strval($address_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
@@ -159,23 +160,14 @@ class Integration_chazki extends CarrierModule
         $order_decoded = json_decode($orderJSON);
 
         $order_details = ChazkiCollector::getOrderDet($order_decoded->order->associations->order_rows[0]->id, 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
-        
-        
-        // echo "<pre>";
-        // var_dump(strval($address));
-        // echo "</pre>";
+
+        echo "<pre>";
+        print_r($orderObj);
+        echo "<pre>";
 
         // echo "<pre>";
-        // print_r($customer);
-        // echo "</pre>";
-
+        // var_dump($orderStatusObj);
         // echo "<pre>";
-        // print_r($orderJSON);
-        // echo "</pre>";
-
-        // echo "<pre>";
-        // print_r($order_details);
-        // echo "</pre>";
         
         die();
         // $shop_address1 = Configuration::get('PS_SHOP_ADDR1');
