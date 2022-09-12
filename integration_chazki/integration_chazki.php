@@ -148,12 +148,36 @@ class Integration_chazki extends CarrierModule
 
     public function hookActionValidateOrder($params)
     {
-        $order = $params['order'];
+        $orderObj = $params['order'];
         
-        $address_id = $order->id_address_delivery;
-        ChazkiCollector::get(strval($address_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $address_id = $orderObj->id_address_delivery;
+        $address = ChazkiCollector::getAddress(strval($address_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $customer_id = $orderObj->id_customer;
+        $customer = ChazkiCollector::getCustomers(strval($customer_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $order_id = $orderObj->id;
+        $orderJSON = ChazkiCollector::getOrder(strval($order_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $order_decoded = json_decode($orderJSON);
+
+        $order_details = ChazkiCollector::getOrderDet($order_decoded->order->associations->order_rows[0]->id, 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
         
-        // $customer_id = $order->$id_customer;
+        
+        // echo "<pre>";
+        // var_dump(strval($address));
+        // echo "</pre>";
+
+        // echo "<pre>";
+        // print_r($customer);
+        // echo "</pre>";
+
+        // echo "<pre>";
+        // print_r($orderJSON);
+        // echo "</pre>";
+
+        // echo "<pre>";
+        // print_r($order_details);
+        // echo "</pre>";
+        
+        die();
         // $shop_address1 = Configuration::get('PS_SHOP_ADDR1');
         // $shop_address2 = Configuration::get('PS_SHOP_ADDR2');
         // $shop_contac_phone = Configuration::get('PS_SHOP_PHONE');

@@ -39,7 +39,6 @@ class ChazkiCollector
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $url,
             CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
-            CURLOPT_HEADER => 1,
             CURLOPT_USERPWD => $chazkiAccess . ":''",
         ));
 
@@ -56,17 +55,28 @@ class ChazkiCollector
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $url,
             CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
-            CURLOPT_HEADER => 1,
             CURLOPT_USERPWD => $chazkiAccess . ":''",
         ));
 
         $response = curl_exec($curl);
 
-        echo '<pre>';
-        print_r($response);
-        echo '</pre>';
+        return $response;
+    }
 
-        die();
+    public function getOrder($resource_id, $chazkiAccess)
+    {
+        $curl = curl_init();
+        $url = 'http://localhost/tienda-prueba-ps/api/orders/' . $resource_id . '?output_format=JSON';
+        curl_setopt_array($curl, array(
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
+            CURLOPT_USERPWD => $chazkiAccess . ":''",
+        ));
+
+        $response = curl_exec($curl);
+
+        return $response;
     }
 
     public function getOrderDet($resource_id, $chazkiAccess)
@@ -77,16 +87,11 @@ class ChazkiCollector
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $url,
             CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
-            CURLOPT_HEADER => 1,
             CURLOPT_USERPWD => $chazkiAccess . ":''",
         ));
 
         $response = curl_exec($curl);
 
-        echo '<pre>';
-        print_r($response);
-        echo '</pre>';
-
-        die();
+        return $response;
     }
 }
