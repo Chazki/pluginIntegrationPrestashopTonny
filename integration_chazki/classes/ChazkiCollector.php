@@ -45,11 +45,7 @@ class ChazkiCollector
 
         $response = curl_exec($curl);
 
-        echo '<pre>';
-        print_r($response);
-        echo '</pre>';
-
-        die();
+        return $response;
     }
 
     public function getCustomers($resource_id, $chazkiAccess)

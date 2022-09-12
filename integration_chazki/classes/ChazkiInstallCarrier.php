@@ -39,16 +39,13 @@ class ChazkiInstallCarrier
     }
 
     /**
-     * enables webservice
+     * creates a ChazkiAccess key
      *
      * @return void
-     * @throws PrestaShopDatabaseException
      */
 
-    public function enableWebService()
+    public function ChazkiAccess()
     {
-        ChazkiHelper::updateValue('PS_WEBSERVICE', 1);
-
         $chazkiAccess = new WebserviceKey();
         $chazkiAccess->key = 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5';
         $chazkiAccess->save();
@@ -61,6 +58,25 @@ class ChazkiInstallCarrier
         ];
 
         WebserviceKey::setPermissionForAccount($chazkiAccess->id, $permissions);
+    }
+    
+    /**
+     * enables webservice
+     *
+     * @return void
+     * @throws PrestaShopDatabaseException
+     */
+
+    public function enableWebService()
+    {
+        if (ChazkiHelper::get('PS_WEBSERVICE') == 1) {
+            $this->ChazkiAccess();
+        } else {
+            ChazkiHelper::updateValue('PS_WEBSERVICE', 1);
+            $this->ChazkiAccess();
+        }
+        
+        
     }
 
     /**
