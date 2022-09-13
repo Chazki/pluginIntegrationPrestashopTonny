@@ -153,30 +153,37 @@ class Integration_chazki extends CarrierModule
         $orderStatusObj = $params['orderStatus'];
         
         $address_id = $orderObj->id_address_delivery;
-        $address = ChazkiCollector::getAddress(strval($address_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $addressJSON = ChazkiCollector::getAddress(strval($address_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $address_decoded = json_decode($addressJSON);
         $customer_id = $orderObj->id_customer;
-        $customer = ChazkiCollector::getCustomers(strval($customer_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $customerJSON = ChazkiCollector::getCustomers(strval($customer_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $customer_decoded = json_decode($customerJSON);
         $order_id = $orderObj->id;
         $orderJSON = ChazkiCollector::getOrder(strval($order_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
         $order_decoded = json_decode($orderJSON);
+        $orderDetailsJSON = ChazkiCollector::getOrderDet($order_decoded->order->associations->order_rows[0]->id, 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $order_details_decoded = json_decode($orderDetailsJSON);
 
-        $order_details = ChazkiCollector::getOrderDet($order_decoded->order->associations->order_rows[0]->id, 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $chazkiOrder = array(
+            'customer' => $customer_decoded->customer,
+            'address' => $address_decoded->address,
+            'order' => $order_decoded->order,
+            'order_details' => $order_details_decoded->order_detail
+        );
+
+        $new_order = new ChazkiOrders($this);
+
+        if($new_order->validateOrder()) {
+            $chazkiorderreturn = $new_order->buildOrder($chazkiOrder);
+            // $new_order->generateOrder($params);
+
+        }
 
         echo "<pre>";
-        print_r($orderObj);
+        print_r($chazkiorderreturn);
         echo "<pre>";
-
-        // echo "<pre>";
-        // var_dump($orderStatusObj);
-        // echo "<pre>";
         
         die();
-        // $shop_address1 = Configuration::get('PS_SHOP_ADDR1');
-        // $shop_address2 = Configuration::get('PS_SHOP_ADDR2');
-        // $shop_contac_phone = Configuration::get('PS_SHOP_PHONE');
-        // $shop_city = Configuration::get('PS_SHOP_CITY');
-        // $shop_zipcode = Configuration::get('PS_SHOP_CODE');
-        // $shop_email = Configuration::get('PS_SHOP_EMAIL');
     }
 
     public function hookActionCarrierUpdate($params)

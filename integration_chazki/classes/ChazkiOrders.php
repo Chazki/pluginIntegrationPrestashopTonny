@@ -38,10 +38,52 @@ class ChazkiOrders
         return true;
     }
 
-    public function generateOrder($params)
+    public function buildOrder($params)
     {
-        $bodyJSON = new stdClass();
-        $bodyJSON = json_encode($params);
+        $chazkiOrder = new stdClass();
+
+        $chazkiOrder->enterpriseKey = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_API_KEY'));
+        $chazkiOrder->orders = array(
+            'trackCode' => $params['order']->reference,
+            'serviceID' => 'EXPRESS',
+            'productDescription' => $params['order_details']->product_name,
+            'productPrice' => floatval($params['order_details']->product_price),
+            'reverseLogistic' => 'NO',
+            'crossdocking' => 'NO',
+            'pickUpBranchID' => '',
+            'pickUpAddress' => Configuration::get('PS_SHOP_ADDR1'),
+            'pickUpPostalCode' => Configuration::get('PS_SHOP_CODE'),
+            'pickUpAddressReference' => '',
+            'pickUpPrimaryReference' => '',
+            'pickUpSecondaryReference' => Configuration::get('PS_SHOP_CITY'),
+            'pickUpNotes' => '',
+            'pickUpContactName' => Configuration::get('PS_SHOP_NAME'),
+            'pickUpContactPhone' => Configuration::get('PS_SHOP_PHONE'),
+            'pickUpContactDocumentTypeID' => '',
+            'pickUpContactDocumentNumber' => '',
+            'pickUpContactEmail' => Configuration::get('PS_SHOP_EMAIL'),
+            'dropBranchID' => '',
+            'dropAddress' => $params['address']->address1,
+            'dropPostalCode' => $params['address']->postcode,
+            'dropAddressReference' => '',
+            'dropPrimaryReference' => '',
+            'dropSecondaryReference' => $params['address']->city,
+            'dropNotes' => '',
+            'dropContactName' => $params['customer']->firstname . ' ' . $params['customer']->lastname,
+            'dropContactPhone' => $params['address']->phone_mobile,
+            'dropContactDocumentTypeID' => '',
+            'dropContactDocumentNumber' => '',
+            'dropContactEmail' => $params['customer']->email,
+            'shipmentPrice' => 0
+        );
+
+        return json_encode($chazkiOrder);
+
+    }
+
+    public function generateOrder($order)
+    {
+        $bodyJSON = $order;
         
         $api_chazki = new ChazkiApi($this->module);
         $api_chazki->sendPost(self::CHAZKI_API_ORDERS, $bodyJSON, array('enterprise-key: teienda'));
