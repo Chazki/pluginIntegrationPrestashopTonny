@@ -26,7 +26,7 @@
 
 class ChazkiShippingCost
 {
-    const CHAZKI_API_SHIPPING = 'https://college-krash.herokuapp.com/api/callback';
+    const CHAZKI_API_SHIPPING = 'https://webhook.site/f3b87a30-a0aa-438f-b5ad-86c057d59f4f';//'https://college-krash.herokuapp.com/api/callback';
 
     public function __construct($module)
     {
@@ -34,21 +34,60 @@ class ChazkiShippingCost
         $this->context = Context::getContext();
     }
 
-    public function loadCity($cart)
+    public function loadDropAddress($cart)
     {
-        $address = new Address($cart->id_address_delivery);
-        $this->city = $address->city;
+        $this->address_obj = new Address($cart->id_address_delivery);
+        $this->drop_address = ($this->address_obj->address1) ? $this->address_obj->address1 : $this->address_obj->address2;
+        
+        if ($this->address_obj->city) {
+            $this->drop_address = $this->drop_address . ', ' . $this->address_obj->city;
+        }
+
+        if ($this->address_obj->country) {
+            $this->drop_address = $this->drop_address . ', ' . $this->address_obj->country;
+        }
     }
 
-    protected static function sendChazki($postUrl, $params)
+    public function loadPickupAddress()
     {
+        $this->service_name = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_SERVICE_NAME));
+        $this->enterprise_key = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_API_KEY_NAME));
+
+        if (ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_BRANCH_ID_NAME))) {
+            $this->pickup_address = 'Jr. Gonzales Prada 280, Miraflores, Lima';
+        } else {
+            $this->pickup_address = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . 'SHOP_ADDR1'));
+            
+            if (ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . 'SHOP_CITY'))) {
+                $this->pickup_address = $this->pickup_address . ', ' . ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . 'SHOP_CITY'));
+            }
+            
+            if (ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . 'SHOP_COUNTRY'))) {
+                $this->pickup_address = $this->pickup_address . ', ' . ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . 'SHOP_COUNTRY'));
+            }
+        }
+    }
+
+    protected static function sendChazki($postUrl, $params, $headers)
+    {
+        if (extension_loaded('curl') == false) {
+            $this->_errors[] = $this->l('You have to enable the cURL extension on your server to install this module');
+            return false;
+        }
+
+        if($headers && count($headers) > 0) {
+            array_push($headers, 'Content-Type:application/json');
+        } else {
+            $headers = array('Content-Type:application/json');
+        }
+
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $postUrl,
             CURLOPT_SSL_VERIFYPEER => 0,
             CURLOPT_SSL_VERIFYHOST => 0,
-            CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
+            CURLOPT_HTTPHEADER => $headers,
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POST => 1,
             CURLOPT_POSTFIELDS => $params,
@@ -60,21 +99,26 @@ class ChazkiShippingCost
         curl_close($curl);
     }
 
-    protected function getShippingCost($cart)
+    protected function getShippingCost()
     {
-        if (extension_loaded('curl') == false) {
-            $this->_errors[] = $this->l('You have to enable the cURL extension on your server to install this module');
-            return false;
-        }
+        $bodyObj = array(
+            'pickupAddress' => $this->pickup_address,
+            'serviceName' => $this->service_name,
+            'dropAddress' => array(
+                $this->drop_address
+            )
+        );
+
         $bodyJSON = new stdClass();
-        $bodyJSON = json_encode($this->module);
-        $this->sendChazki(self::CHAZKI_API_SHIPPING, $bodyJSON);
+        $bodyJSON = json_encode($bodyObj);
+        $this->sendChazki(self::CHAZKI_API_SHIPPING, $bodyJSON, array('enterprise-key:' . $this->enterprise_key));
     }
 
     public function run($cart, $shipping_fees)
     {
-        $this->loadCity($cart);
-        $this->getShippingCost($cart);
+        $this->loadDropAddress($cart);
+        $this->loadPickupAddress();
+        $this->getShippingCost();
         return 30 + $shipping_fees;
     }
 }

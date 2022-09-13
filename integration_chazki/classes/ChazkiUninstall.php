@@ -33,15 +33,14 @@ class ChazkiUninstall
 
     public function uninstall()
     {
-        $carrier_obj = Carrier::getCarrierByReference(
+        $carrier_obj = new Carrier(
             ChazkiHelper::get(
                 Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_SERVICE_NAME)
             )
         );
-        if (Validate::isLoadedObject($carrier_obj)) {
+        if ($carrier_obj) {
             $carrier_obj->delete();
-            $carrier_obj->deleted = 1;
-            $carrier_obj->update();
+            Db::getInstance()->execute('UPDATE `'._DB_PREFIX_.'carrier` SET `deleted` = 1 WHERE `id_reference` = '.$carrier_obj->id_reference);
         }
 
         Configuration::deleteByName('INTEGATION_CHAZKI_LIVE_MODE');
