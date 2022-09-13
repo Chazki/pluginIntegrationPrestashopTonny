@@ -40,13 +40,33 @@ class ChazkiUninstall
         );
         if ($carrier_obj) {
             $carrier_obj->delete();
-            Db::getInstance()->execute('UPDATE `'._DB_PREFIX_.'carrier` SET `deleted` = 1 WHERE `id_reference` = '.$carrier_obj->id_reference);
+            Db::getInstance()->execute(
+                'UPDATE `'._DB_PREFIX_.
+                'carrier` SET `deleted` = 1 WHERE `id_reference` = '.
+                $carrier_obj->id_reference
+            );
         }
 
         Configuration::deleteByName('INTEGATION_CHAZKI_LIVE_MODE');
-        Configuration::deleteByName(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_API_KEY_NAME));
-        Configuration::deleteByName(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_BRANCH_ID_NAME));
-        Configuration::deleteByName(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_SERVICE_NAME));
-        Configuration::deleteByName(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_SERVICE_NAME . '_REFERENCE'));
+        Configuration::deleteByName(
+            Tools::strtoupper(
+                _DB_PREFIX_ . ChazkiInstallPanel::MODULE_API_KEY_NAME
+            )
+        );
+        Configuration::deleteByName(
+            Tools::strtoupper(
+                _DB_PREFIX_ . ChazkiInstallPanel::MODULE_BRANCH_ID_NAME
+            )
+        );
+        Configuration::deleteByName(
+            Tools::strtoupper(
+                _DB_PREFIX_ . ChazkiInstallPanel::MODULE_SERVICE_NAME
+            )
+        );
+        Configuration::deleteByName(
+            Tools::strtoupper(
+                _DB_PREFIX_ . ChazkiInstallPanel::MODULE_SERVICE_NAME . '_REFERENCE'
+            )
+        );
     }
 }

@@ -32,7 +32,9 @@ require_once(dirname(__FILE__).'/classes/ChazkiInstallCarrier.php');
 require_once(dirname(__FILE__).'/classes/ChazkiInstallPanel.php');
 require_once(dirname(__FILE__).'/classes/ChazkiUninstall.php');
 require_once(dirname(__FILE__).'/classes/ChazkiHelper.php');
+require_once(dirname(__FILE__).'/classes/ChazkiApi.php');
 require_once(dirname(__FILE__).'/classes/ChazkiShippingCost.php');
+require_once(dirname(__FILE__).'/classes/ChazkiOrders.php');
 
 class Integration_chazki extends CarrierModule
 {
@@ -142,9 +144,13 @@ class Integration_chazki extends CarrierModule
         */
     }
 
-    public function hookActionValidateOrder()
+    public function hookActionValidateOrder($params)
     {
-        /* Place your code here. */
+        $new_order = new ChazkiOrders($this);
+
+        if($new_order->validateOrder()) {
+            $new_order->generateOrder($params);
+        }
     }
 
     public function hookActionCarrierUpdate($params)
