@@ -1,0 +1,3 @@
+interface DtoVtexRegisterConfigRequest {
+    idEnterprisePlatform: string
+}

@@ -24,11 +24,10 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class ChazkiInstall
+class ChazkiInstallCarrier
 {
     public static $chazki_services = array(
-        'SAME_DAY' => 'Chazki - Same Day',
-        'NEXT_DAY' => 'Chazki - Next Day'
+        'CHAZKI_SERVICE' => 'Chazki',
     );
 
     const CHAZKI_TRACKING_URL_CARRIER = 'https://nintendo-dev.chazki.com/trackcodeTracking/@';
@@ -84,8 +83,9 @@ class ChazkiInstall
     protected function addCarrier($name, $key)
     {
         $key = Tools::strtoupper($key);
-        $id_reference = \Db::getInstance()->getValue($s=
-            "SELECT value FROM " . _DB_PREFIX_ . "configuration WHERE name LIKE '" . pSQL($key) .
+        $id_reference = \Db::getInstance()->getValue(
+            "SELECT value FROM "._DB_PREFIX_.
+            "configuration WHERE name LIKE '".pSQL($key).
             "' ORDER BY id_configuration DESC"
         );
         $carrier = Carrier::getCarrierByReference($id_reference);
@@ -99,10 +99,10 @@ class ChazkiInstall
         $carrier->delay = array();
         $carrier->url = self::CHAZKI_TRACKING_URL_CARRIER;
         $carrier->external_module_name = 'integration_chazki';
-        $carrier->active = TRUE;
+        $carrier->active = true;
         $carrier->shipping_external = true;
-        $carrier->is_module = TRUE;
-        $carrier->need_range = TRUE;
+        $carrier->is_module = true;
+        $carrier->need_range = true;
 
         foreach (Language::getLanguages() as $lang) {
             $id_lang = (int)$lang['id_lang'];
@@ -111,16 +111,13 @@ class ChazkiInstall
 
         if ($carrier->add()) {
             @copy(
-                dirname(__FILE__) . '/logo.png',
+                dirname(__FILE__, 2) . '/views/img/logoChazki.jpg',
                 _PS_SHIP_IMG_DIR_ . DIRECTORY_SEPARATOR . (int)$carrier->id . '.jpg'
             );
 
             $id_reference = (int) $carrier->id_reference ?: (int) $carrier->id;
-            /*\Db::getInstance()->query(
-                "INSERT " . _DB_PREFIX_ . "configuration SET name='" . pSQL($key) . "', value=$id_reference"
-            );*/
-            Configuration::updateValue(_DB_PREFIX_ . $key, $carrier->id);
-            Configuration::updateValue(_DB_PREFIX_ . $key . '_reference', $carrier->id);
+            Configuration::updateValue(Tools::strtoupper(_DB_PREFIX_ . $key), $carrier->id);
+            Configuration::updateValue(Tools::strtoupper(_DB_PREFIX_ . $key . '_reference'), $carrier->id);
 
             $this->addGroups($carrier);
             $this->addRanges($carrier);
@@ -176,8 +173,7 @@ class ChazkiInstall
             $sql .= '(' . (int)$carrier->id . ', ' . (int)$id_group . '),';
         }
 
-        return Db::getInstance()
-            ->execute(rtrim($sql, ','));
+        return Db::getInstance()->execute(rtrim($sql, ','));
     }
 
     protected function addRanges($carrier)
@@ -204,17 +200,17 @@ class ChazkiInstall
         foreach ($zones as $zone) {
             $carrier->addZone($zone['id_zone']);
             $carrier->addDeliveryPrice(array(
-                'id_carrier' => $carrier->id, 
-                'id_range_price' => (int) $rangePrice->id, 
-                'id_range_weight' => NULL, 
-                'id_zone' => (int) $zone['id_zone'], 
+                'id_carrier' => $carrier->id,
+                'id_range_price' => (int) $rangePrice->id,
+                'id_range_weight' => null,
+                'id_zone' => (int) $zone['id_zone'],
                 'price' => '25'
             ));
             $carrier->addDeliveryPrice(array(
-                'id_carrier' => $carrier->id, 
-                'id_range_price' => NULL, 
-                'id_range_weight' => (int) $rangeWeight->id, 
-                'id_zone' => (int) $zone['id_zone'], 
+                'id_carrier' => $carrier->id,
+                'id_range_price' => null,
+                'id_range_weight' => (int) $rangeWeight->id,
+                'id_zone' => (int) $zone['id_zone'],
                 'price' => '25'
             ));
         }
