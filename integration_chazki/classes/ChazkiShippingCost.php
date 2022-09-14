@@ -26,7 +26,7 @@
 
 class ChazkiShippingCost
 {
-    const CHAZKI_API_SHIPPING = 'https://webhook.site/f3b87a30-a0aa-438f-b5ad-86c057d59f4f';
+    const CHAZKI_API_SHIPPING = 'https://webhook.site/386c0442-b434-4b45-800e-174a207a9143';
     //'https://college-krash.herokuapp.com/api/callback';
 
     public function __construct($module)

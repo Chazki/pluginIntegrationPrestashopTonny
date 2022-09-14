@@ -174,15 +174,15 @@ class Integration_chazki extends CarrierModule
 
         if($new_order->validateOrder()) {
             $chazkiorderreturn = $new_order->buildOrder($chazkiOrder);
-            // $new_order->generateOrder($params);
+            $new_order->generateOrder($chazkiorderreturn);
 
         }
 
-        echo "<pre>";
-        print_r($chazkiorderreturn);
-        echo "<pre>";
+        // echo "<pre>";
+        // print_r($chazkiorderreturn);
+        // echo "<pre>";
         
-        die();
+        // die();
     }
 
     public function hookActionCarrierUpdate($params)

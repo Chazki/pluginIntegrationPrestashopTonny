@@ -61,7 +61,12 @@ class ChazkiApi
 
         $response = curl_exec($curl);
         $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        
+        echo "<pre>";
+        print_r($response);
+        echo "</pre>";
 
+        die();
         curl_close($curl);
     }
 }
