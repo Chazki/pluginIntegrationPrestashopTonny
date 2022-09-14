@@ -26,7 +26,8 @@
 
 class ChazkiShippingCost
 {
-    const CHAZKI_API_SHIPPING = 'https://webhook.site/f3b87a30-a0aa-438f-b5ad-86c057d59f4f';
+    const CHAZKI_API_SHIPPING = 'https://us-central1-chazki-link-beta.cloudfunctions.net'.
+        '/cfuntions-integration-prestashop/api/prestashop/quote';
     //'https://college-krash.herokuapp.com/api/callback';
 
     public function __construct($module)
@@ -53,11 +54,11 @@ class ChazkiShippingCost
 
     public function loadPickupAddress()
     {
-        $this->service_name = ChazkiHelper::get(
+        $this->service_name = str_replace('_', ' ', ChazkiHelper::get(
             Tools::strtoupper(
                 _DB_PREFIX_ . ChazkiInstallPanel::MODULE_SERVICE_NAME
             )
-        );
+        ));
         $this->enterprise_key = ChazkiHelper::get(
             Tools::strtoupper(
                 _DB_PREFIX_ . ChazkiInstallPanel::MODULE_API_KEY_NAME
@@ -81,37 +82,6 @@ class ChazkiShippingCost
         }
     }
 
-    /*protected static function sendChazki($postUrl, $params, $headers)
-    {
-        if (extension_loaded('curl') == false) {
-            $this->_errors[] = $this->l('You have to enable the cURL extension on your server to install this module');
-            return false;
-        }
-
-        if($headers && count($headers) > 0) {
-            array_push($headers, 'Content-Type:application/json');
-        } else {
-            $headers = array('Content-Type:application/json');
-        }
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL => $postUrl,
-            CURLOPT_SSL_VERIFYPEER => 0,
-            CURLOPT_SSL_VERIFYHOST => 0,
-            CURLOPT_HTTPHEADER => $headers,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POST => 1,
-            CURLOPT_POSTFIELDS => $params,
-        ));
-
-        $response = curl_exec($curl);
-
-        //$http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-    }*/
-
     protected function getShippingCost()
     {
         $bodyObj = array(
@@ -126,18 +96,25 @@ class ChazkiShippingCost
         $bodyJSON = json_encode($bodyObj);
 
         $api_chazki = new ChazkiApi($this->module);
-        $api_chazki->sendPost(
+        $responseJson = $api_chazki->sendPost(
             self::CHAZKI_API_SHIPPING,
             $bodyJSON,
             array('enterprise-key:' . $this->enterprise_key)
         );
+        $response = json_decode($responseJson);
+        return (!$response) ? false : $response->quote;
     }
 
     public function run($cart, $shipping_fees)
     {
         $this->loadDropAddress($cart);
         $this->loadPickupAddress();
-        $this->getShippingCost();
-        return 30 + $shipping_fees;
+        $quote = $this->getShippingCost();
+
+        if (!$quote) {
+            return false;
+        }
+
+        return ($quote) ? $quote : $shipping_fees;
     }
 }

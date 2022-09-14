@@ -103,9 +103,6 @@ class Integration_chazki extends CarrierModule
     {
         if (Context::getContext()->customer->logged == true)
         {
-            //$id_address_delivery = Context::getContext()->cart->id_address_delivery;
-            //$address = new Address($id_address_delivery);
-
             $chazki_ship = new ChazkiShippingCost($this);
             return $chazki_ship->run($params, $shipping_cost);
         }
@@ -180,8 +177,11 @@ class Integration_chazki extends CarrierModule
 
     public function hookActionCarrierUpdate($params)
     {
-        if ($params['carrier']->id_reference == Configuration::get(_DB_PREFIX_ . 'CHAZKI_SERVICE_reference')) {
-            Configuration::updateValue(_DB_PREFIX_ . 'SAME_DAY', $params['carrier']->id);
+        if ($params['carrier']->id_reference == Configuration::get(Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER_reference'))) {
+            Configuration::updateValue(
+                Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER'),
+                $params['carrier']->id
+            );
         }
     }
 }

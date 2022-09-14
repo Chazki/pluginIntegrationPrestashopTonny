@@ -27,7 +27,7 @@
 class ChazkiInstallCarrier
 {
     public static $chazki_services = array(
-        'CHAZKI_SERVICE' => 'Chazki',
+        'CHAZKI_SERVICE_CARRIER' => 'Chazki',
     );
 
     const CHAZKI_TRACKING_URL_CARRIER = 'https://nintendo-dev.chazki.com/trackcodeTracking/@';
@@ -75,8 +75,6 @@ class ChazkiInstallCarrier
             ChazkiHelper::updateValue('PS_WEBSERVICE', 1);
             $this->ChazkiAccess();
         }
-        
-        
     }
 
     /**

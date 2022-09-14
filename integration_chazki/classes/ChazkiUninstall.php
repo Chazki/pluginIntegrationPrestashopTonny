@@ -35,7 +35,7 @@ class ChazkiUninstall
     {
         $carrier_obj = new Carrier(
             ChazkiHelper::get(
-                Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_SERVICE_NAME)
+                Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER_reference')
             )
         );
         if ($carrier_obj) {
@@ -65,7 +65,12 @@ class ChazkiUninstall
         );
         Configuration::deleteByName(
             Tools::strtoupper(
-                _DB_PREFIX_ . ChazkiInstallPanel::MODULE_SERVICE_NAME . '_REFERENCE'
+                _DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER_reference'
+            )
+        );
+        Configuration::deleteByName(
+            Tools::strtoupper(
+                _DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER'
             )
         );
     }

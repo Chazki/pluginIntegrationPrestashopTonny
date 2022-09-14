@@ -61,7 +61,12 @@ class ChazkiApi
 
         $response = curl_exec($curl);
         $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-
         curl_close($curl);
+
+        if ($http_status > 499) {
+            return false;
+        }
+
+        return $response;
     }
 }
