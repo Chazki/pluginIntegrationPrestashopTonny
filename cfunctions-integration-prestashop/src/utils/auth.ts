@@ -1,7 +1,7 @@
-import { getEnterprisePlatformsByName } from "../database";
+import { getEnterpriseIDByKey } from "../database";
 import { Response, NextFunction } from "express";
 
-export class MultivendeError extends Error {
+export class PrestashopError extends Error {
     public status: number
 
     constructor(public message: string) {
@@ -17,16 +17,16 @@ export const verifyIdPlatformKey =async (
 ): Promise<void> => {
     try {
         const { headers } = req
-        const enterprisePlatformId = headers['id-platform'] as string
-        if(!enterprisePlatformId)
-            throw new MultivendeError('id-platform is missing.')
+        const enterpriseKey = headers['enterprise-key'] as string
+        if(!enterpriseKey)
+            throw new PrestashopError('id-platform is missing.')
 
-        const idPlatform = await getEnterprisePlatformsByName(enterprisePlatformId)
-        req.idPlatform = idPlatform.id
+        const enterpriseId = await getEnterpriseIDByKey(enterpriseKey)
+        req.enterpriseID = enterpriseId
 
         next()
     } catch (e) {
         console.log(e)
-        next( e instanceof MultivendeError ? e : new MultivendeError('Internal error.'))
+        next( e instanceof PrestashopError ? e : new PrestashopError('Internal error.'))
     }
 }

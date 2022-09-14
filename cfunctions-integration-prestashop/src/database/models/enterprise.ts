@@ -1,5 +1,5 @@
 import { DataTypes, Model, ModelCtor, Optional, Sequelize } from 'sequelize'
-import { EnterprisePlatformInstance, CountryInstance, CityInstance } from '..'
+import { EnterprisePlatformInstance, CountryInstance, ServiceInstance, BranchInstance, CityInstance } from '..'
 
 interface ContactPerson {
   area: string
@@ -64,6 +64,8 @@ interface EnterpriseInstance
       Platforms: EnterprisePlatformInstance[]
       Country: CountryInstance
       City: CityInstance
+      Branches: BranchInstance[]
+      Services: ServiceInstance[]
     }
 
 const enterpriseFactory = (

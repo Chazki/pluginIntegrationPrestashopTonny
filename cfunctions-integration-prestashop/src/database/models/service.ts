@@ -1,5 +1,5 @@
 import { DataTypes, Model, ModelCtor, Optional, Sequelize } from 'sequelize'
-import { EnterprisePlatformInstance } from './'
+import { EnterprisePlatformInstance, EnterpriseInstance } from './'
 
 interface ServiceAttributes {
   attentionSchedule?: Record<string, unknown>
@@ -24,6 +24,7 @@ interface ServiceInstance
   extends Model<ServiceAttributes, ServiceCreationAttributes>,
     ServiceAttributes {
         EnterprisePlatform: EnterprisePlatformInstance
+        Enterprise: EnterpriseInstance
     }
 
 const serviceFactory = (sequelize: Sequelize): ModelCtor<ServiceInstance> =>

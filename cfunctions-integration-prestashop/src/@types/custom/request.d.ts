@@ -1,7 +1,7 @@
 type ExpressRequest = import('express').Request
 
 interface CustomRequest extends ExpressRequest {
-  idPlatform?: number
+  enterpriseID?: number
   log: import('express-pino-logger').HttpLogger['logger']
   body: {
     args?: import('schemas').UserDTO
@@ -9,6 +9,6 @@ interface CustomRequest extends ExpressRequest {
   // We can add custom headers via intersection, remember that for some reason
   // headers must be in Snake-Pascal-Case
   headers: import('http').IncomingHttpHeaders & {
-    'id-platform'?: string
+    'enterprise-key'?: string
   }
 }

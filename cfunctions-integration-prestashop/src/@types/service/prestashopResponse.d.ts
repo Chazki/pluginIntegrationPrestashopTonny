@@ -1,0 +1,3 @@
+interface DtoPrestashopBranchResponse {
+    quote: number
+}

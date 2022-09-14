@@ -69,27 +69,6 @@ export const getEnterprisePlatformsCompleteByName = async (
     }
 }
 
-export const updateEnterprisePlatform = async (
-    id: number,
-    objectUpdate: DtoUpdateEnterprisePlatform
-): Promise<number> => {
-    try {
-        if(!id)
-            throw new Error('id not found.')
-        const update = await EnterprisePlatforms.update(
-            objectUpdate,
-            {
-                where: { id }
-            }
-        )
-
-        return update[0]
-    } catch(error: any){
-        console.log(error)
-        throw new Error(error.message)
-    }
-}
-
 export const getEnterprisePlatformsById = async (
     id: string
 ): Promise<EnterprisePlatformInstance> => {

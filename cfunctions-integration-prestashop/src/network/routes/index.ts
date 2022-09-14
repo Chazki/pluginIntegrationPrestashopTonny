@@ -1,2 +1,1 @@
-export * from './integrations'
-export * from './vtex'
+export * from './prestashop'

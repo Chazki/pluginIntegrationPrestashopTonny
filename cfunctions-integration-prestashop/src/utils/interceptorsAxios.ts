@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import { getEnterprisePlatformsByName, updateEnterprisePlatform } from "../database";
+import { getEnterprisePlatformsByName } from "../database";
 
 const onRequest = (config: AxiosRequestConfig): AxiosRequestConfig => {
     if(config.headers)

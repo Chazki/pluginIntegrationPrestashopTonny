@@ -139,6 +139,28 @@ EnterprisePlatforms.belongsTo(Enterprise, {
   as: "Enterprise"
 })
 
+Enterprise.hasMany(Service, {
+  foreignKey: 'id',
+  sourceKey: 'serviceIDs',
+  as: 'Services'
+})
+
+Service.belongsTo(Enterprise, {
+  foreignKey: 'serviceIDs',
+  targetKey: 'id',
+  as: 'Enterprise'
+})
+
+Enterprise.hasMany(Branch, {
+  foreignKey: "enterpriseID",
+  as: "Branches",
+})
+
+Branch.belongsTo(Enterprise, {
+  foreignKey: "enterpriseID",
+  as: "Enterprise"
+})
+
 EnterprisePlatforms.hasMany(Service, {
   foreignKey: 'id',
   as: 'Services'

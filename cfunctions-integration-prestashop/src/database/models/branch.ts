@@ -1,4 +1,5 @@
 import { DataTypes, Model, ModelCtor, Optional, Sequelize } from 'sequelize'
+import { EnterpriseInstance } from '..'
 
 interface BranchAttributes {
   id: number
@@ -21,7 +22,9 @@ interface BranchAttributes {
 type BranchCreationAttributes = Optional<BranchAttributes, 'id'>
 interface BranchInstance
   extends Model<BranchAttributes, BranchCreationAttributes>,
-    BranchAttributes {}
+    BranchAttributes {
+      Enterprise: EnterpriseInstance
+    }
 
 const branchFactory = (sequelize: Sequelize): ModelCtor<BranchInstance> =>
   sequelize.define<BranchInstance>(
