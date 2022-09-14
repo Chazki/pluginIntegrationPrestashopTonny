@@ -31,7 +31,7 @@ class ChazkiOrders
         $this->module = $module;
     }
 
-    const CHAZKI_API_ORDERS = 'https://webhook.site/f3b87a30-a0aa-438f-b5ad-86c057d59f4f';
+    const CHAZKI_API_ORDERS = 'https://us-central1-chazki-link-dev.cloudfunctions.net/uploadClientOrders';
     
     public function validateOrder()
     {
@@ -42,10 +42,16 @@ class ChazkiOrders
     {
         $chazkiOrder = new stdClass();
 
-        $chazkiOrder->enterpriseKey = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_API_KEY'));
+        $chazkiOrder->enterpriseKey = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_API_KEY_NAME));
         $chazkiOrder->orders = array(
             'trackCode' => $params['order']->reference,
+            'paymentMethodID' => 'PAGADO',
+            'paymentProofID' => 'BOLETA',
             'serviceID' => 'EXPRESS',
+            'packageEnvelope' => 'Caja',
+            'packageWeight' => 0,
+            'packageSizeID' => 'S',
+            'packageQuantity' => intval($params['order_details']->product_quantity),
             'productDescription' => $params['order_details']->product_name,
             'productPrice' => floatval($params['order_details']->product_price),
             'reverseLogistic' => 'NO',
@@ -59,8 +65,8 @@ class ChazkiOrders
             'pickUpNotes' => '',
             'pickUpContactName' => Configuration::get('PS_SHOP_NAME'),
             'pickUpContactPhone' => Configuration::get('PS_SHOP_PHONE'),
-            'pickUpContactDocumentTypeID' => '',
-            'pickUpContactDocumentNumber' => '',
+            'pickUpContactDocumentTypeID' => 'RUC',
+            'pickUpContactDocumentNumber' => '12345678',
             'pickUpContactEmail' => Configuration::get('PS_SHOP_EMAIL'),
             'dropBranchID' => '',
             'dropAddress' => $params['address']->address1,
@@ -70,9 +76,9 @@ class ChazkiOrders
             'dropSecondaryReference' => $params['address']->city,
             'dropNotes' => '',
             'dropContactName' => $params['customer']->firstname . ' ' . $params['customer']->lastname,
-            'dropContactPhone' => $params['address']->phone_mobile,
-            'dropContactDocumentTypeID' => '',
-            'dropContactDocumentNumber' => '',
+            'dropContactPhone' => intval($params['address']->phone_mobile),
+            'dropContactDocumentTypeID' => 'DNI',
+            'dropContactDocumentNumber' => '12345678',
             'dropContactEmail' => $params['customer']->email,
             'shipmentPrice' => 0
         );
