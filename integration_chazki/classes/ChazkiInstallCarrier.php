@@ -44,7 +44,7 @@ class ChazkiInstallCarrier
      * @return void
      */
 
-    public function ChazkiAccess()
+    public function chazkiAccess()
     {
         $chazkiAccess = new WebserviceKey();
         $chazkiAccess->key = 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5';
@@ -70,10 +70,10 @@ class ChazkiInstallCarrier
     public function enableWebService()
     {
         if (ChazkiHelper::get('PS_WEBSERVICE') == 1) {
-            $this->ChazkiAccess();
+            $this->chazkiAccess();
         } else {
             ChazkiHelper::updateValue('PS_WEBSERVICE', 1);
-            $this->ChazkiAccess();
+            $this->chazkiAccess();
         }
     }
 

@@ -107,7 +107,7 @@ class ChazkiCollector
                 CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
                 CURLOPT_USERPWD => $chazkiAccess . ":''",
                 CURLOPT_CUSTOMREQUEST => "PUT",
-                CURLOPT_POSTFIELDS => $data
+                CURLOPT_POSTFIELDS => null
             )
         );
 
