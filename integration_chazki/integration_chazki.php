@@ -33,6 +33,7 @@ require_once(dirname(__FILE__).'/classes/ChazkiInstallPanel.php');
 require_once(dirname(__FILE__).'/classes/ChazkiUninstall.php');
 require_once(dirname(__FILE__).'/classes/ChazkiCollector.php');
 require_once(dirname(__FILE__).'/classes/ChazkiHelper.php');
+require_once(dirname(__FILE__).'/classes/ChazkiTools.php');
 require_once(dirname(__FILE__).'/classes/ChazkiApi.php');
 require_once(dirname(__FILE__).'/classes/ChazkiShippingCost.php');
 require_once(dirname(__FILE__).'/classes/ChazkiOrders.php');
@@ -69,6 +70,7 @@ class Integration_chazki extends CarrierModule
      */
     public function install()
     {
+        include(dirname(__FILE__).'/sql/install.php');
         $this->chazki_carrier->installCarriers();
         $this->chazki_carrier->enableWebService();
         
@@ -80,11 +82,13 @@ class Integration_chazki extends CarrierModule
             $this->registerHook('updateCarrier') &&
             $this->registerHook('actionCarrierUpdate') &&
             $this->registerHook('displayAdminOrder') &&
+            $this->registerHook('actionAdminOrdersListingFieldsModifier') &&
             $this->registerHook('actionValidateOrder');
     }
 
     public function uninstall()
     {
+        //include(dirname(__FILE__).'/sql/uninstall.php');
         $chazki_uninstall = new ChazkiUninstall($this);
         $chazki_uninstall->uninstall();
 
@@ -181,6 +185,55 @@ class Integration_chazki extends CarrierModule
             Configuration::updateValue(
                 Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER'),
                 $params['carrier']->id
+            );
+        }
+    }
+
+    /**
+     * Edit order grid display
+     *
+     * @param array $params
+     * @throws PrestaShopException
+     */
+    public function hookActionAdminOrdersListingFieldsModifier($params)
+    {
+        $this->hookActionAdminOrdersListingFieldsModifierBody($params);
+    }
+
+    /**
+     * Edit order grid display
+     *
+     * @param array $params
+     * @throws PrestaShopException
+     */
+    public function hookActionAdminOrdersListingFieldsModifierBody(&$params)
+    {
+        if (isset($params['select'])) {
+            $table = _DB_PREFIX_ . "integration_chazki";
+            $params['select'] .=
+                    ", $table.tracking_number as spring_service, 
+                    IFNULL($table.status_code, -10) as spring_status ";
+
+            $params['join'] .= " LEFT JOIN $table ON $table.id_order=a.id_order";
+
+            $params['fields']['spring_service'] = array(
+                'title' => $this->displayName,
+                'class' => 'fixed-width-lg',
+                'callback' => 'printTrackTrace',
+                'callback_object' => 'ChazkiTools',
+                'search' => false,
+                'orderby' => false,
+                'remove_onclick' => true,
+            );
+
+            $params['fields']['spring_status'] = array(
+                    'title' => '',
+                    'class' => 'fixed-width-sm',
+                    'callback' => 'printLabelIcon',
+                    'callback_object' => 'ChazkiTools',
+                    'search' => false,
+                    'orderby' => false,
+                    'remove_onclick' => true,
             );
         }
     }

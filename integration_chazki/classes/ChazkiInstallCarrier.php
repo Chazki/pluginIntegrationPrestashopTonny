@@ -137,7 +137,7 @@ class ChazkiInstallCarrier
         $carrier->name = $name;
         $carrier->delay = array();
         $carrier->url = self::CHAZKI_TRACKING_URL_CARRIER;
-        $carrier->external_module_name = 'integration_chazki';
+        $carrier->external_module_name = ChazkiHelper::NAMEL;
         $carrier->active = true;
         $carrier->shipping_external = true;
         $carrier->is_module = true;

@@ -26,10 +26,13 @@
 
 $sql = array();
 
-$sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'integration_chazki` (
-    `id_integration_chazki` int(11) NOT NULL AUTO_INCREMENT,
-    PRIMARY KEY  (`id_integration_chazki`)
-) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
+$sql[] = "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "integration_chazki` (
+    `id_integration` int(11) NOT NULL AUTO_INCREMENT,
+    `id_order` INT UNSIGNED NOT NULL,
+    `tracking_number` VARCHAR(255) NOT NULL DEFAULT '',
+    `status_code` INT NOT NULL DEFAULT 0,
+    PRIMARY KEY  (`id_integration`)
+) ENGINE=" . _MYSQL_ENGINE_ . " ;";
 
 foreach ($sql as $query) {
     if (Db::getInstance()->execute($query) == false) {

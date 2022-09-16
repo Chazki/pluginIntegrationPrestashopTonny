@@ -24,17 +24,15 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-/**
- * In some cases you should not drop the tables.
- * Maybe the merchant will just try to reset the module
- * but does not want to loose all of the data associated to the module.
- */
-$sql = array();
-
-$sql[] = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'integration_chazki ;';
-
-foreach ($sql as $query) {
-    if (Db::getInstance()->execute($query) == false) {
-        return false;
+class ChazkiTools
+{
+    public static function printTrackTrace($service)
+    {
+        return '<span class="label label-primary">Etiqueta de prueba</span>';
+    }
+    
+    public static function printLabelIcon($service)
+    {
+        return '<span class="label label-primary">Etiqueta de prueba</span>';
     }
 }

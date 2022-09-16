@@ -29,12 +29,19 @@ class ChazkiInstallPanel
     const MODULE_API_KEY_NAME = 'CHAZKI_API_KEY';
     const MODULE_BRANCH_ID_NAME = 'CHAZKI_BRANCH_ID';
     const MODULE_SERVICE_NAME = 'CHAZKI_SERVICE';
+    const MODULE_STATUS_NAME = 'CHAZKI_STATUS';
     const IS_API_SETTINGS_TAB = 'IS_CHAZKI_API_SET';
+    const IS_ORDER_SETTINGS_TAB = 'IS_CHAZKI_ORDER_SET';
     const MODULE_NAME = 'Integration_chazkiModule';
 
     public static $services_types = array(
         array('id' => 'SAME_DAY', 'name' => 'Same Day'),
         array('id' => 'NEXT_DAY', 'name' => 'Next Day')
+    );
+
+    public static $status_types = array(
+        array('id' => 'NEW', 'name' => 'Nuevo'),
+        array('id' => 'PAYMENT', 'name' => 'Pago aceptado'),
     );
 
     public function __construct($module)
@@ -48,19 +55,31 @@ class ChazkiInstallPanel
         $output = '';
 
         if (((bool)Tools::isSubmit('submit' . self::MODULE_NAME)) == true) {
-            $api_key = trim((string)Tools::getValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_API_KEY_NAME)));
-            $branch_id = trim((string)Tools::getValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_BRANCH_ID_NAME)));
-            $service_id = trim((string)Tools::getValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_SERVICE_NAME)));
-            if ($api_key) {
-                ChazkiHelper::updateValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_API_KEY_NAME), $api_key);
+            if (Tools::getValue(self::IS_API_SETTINGS_TAB)) {
+                $api_key = trim((string)Tools::getValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_API_KEY_NAME)));
+                $service_id = trim((string)Tools::getValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_SERVICE_NAME)));
+                if ($api_key) {
+                    ChazkiHelper::updateValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_API_KEY_NAME), $api_key);
+                    ChazkiHelper::updateValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_SERVICE_NAME), $service_id);
+                } else {
+                    ChazkiHelper::setNotification(
+                        $this->module->l('The entered API key is not accepted Spring GDS, contact your manager'),
+                        ChazkiHelper::MSG_TYPE_ERROR
+                    );
+                }
+            } elseif (Tools::getValue(self::IS_ORDER_SETTINGS_TAB)) {
+                $send_status = trim((string)Tools::getValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_STATUS_NAME)));
+                $branch_id = trim((string)Tools::getValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_BRANCH_ID_NAME)));
+                ChazkiHelper::updateValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_STATUS_NAME), $send_status);
                 ChazkiHelper::updateValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_BRANCH_ID_NAME), $branch_id);
-                ChazkiHelper::updateValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_SERVICE_NAME), $service_id);
-            } else {
-                ChazkiHelper::setNotification(
-                    $this->module->l('The entered API key is not accepted Spring GDS, contact your manager'),
-                    ChazkiHelper::MSG_TYPE_ERROR
-                );
+
+                ChazkiHelper::setNotification($this->module->l('Customs information updated'));
             }
+
+            /*Tools::redirectAdmin(
+                $this->context->link->getAdminLink('AdminModules', true) .
+                '&configure=' . $this->module->name
+            );*/
         }
 
         $api_id = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . self::MODULE_API_KEY_NAME));
@@ -70,6 +89,7 @@ class ChazkiInstallPanel
         }
 
         $output .= $this->displaySettingsApiForm();
+        $output .= $this->displaySettingsOrderForm();
 
         return $output;
     }
@@ -100,9 +120,8 @@ class ChazkiInstallPanel
         // Get default language
         //$default_lang = (int)ChazkiHelper::get('PS_LANG_DEFAULT');
         $api_key = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . self::MODULE_API_KEY_NAME));
-        $branch_id = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . self::MODULE_BRANCH_ID_NAME));
         $service_id = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . self::MODULE_SERVICE_NAME));
-        $api_key_msg = $this->module->l('You can obtain an API key by contacting us at Chazki');
+        $api_key_msg = $this->module->l('Puedes conseguir Enterprise Key desde el dashboard para clientes de Chazki');
 
         // Init Fields form array
         $fields_form = $this->getConfigForm($api_key_msg);
@@ -139,9 +158,8 @@ class ChazkiInstallPanel
         );
 
         // Load current value
-        $helper->fields_value[Tools::strtoupper(_DB_PREFIX_.self::IS_API_SETTINGS_TAB)] = 1;
+        $helper->fields_value[Tools::strtoupper(self::IS_API_SETTINGS_TAB)] = 1;
         $helper->fields_value[Tools::strtoupper(_DB_PREFIX_.self::MODULE_API_KEY_NAME)] = $api_key;
-        $helper->fields_value[Tools::strtoupper(_DB_PREFIX_.self::MODULE_BRANCH_ID_NAME)] = $branch_id;
         $helper->fields_value[Tools::strtoupper(_DB_PREFIX_.self::MODULE_SERVICE_NAME)] = $service_id;
 
         return $helper->generateForm($fields_form);
@@ -156,7 +174,7 @@ class ChazkiInstallPanel
             array(
                 'form' => array(
                     'legend' => array(
-                        'title' => $this->module->l('API Settings'),
+                        'title' => $this->module->l('Configuración de Api'),
                         'icon' => 'icon-cogs',
                     ),
                     'description' => $api_key_msg,
@@ -184,12 +202,93 @@ class ChazkiInstallPanel
                             ),
                             'required' => true
                         ),
+                    ),
+                    'submit' => array(
+                        'title' => $this->module->l('Save'),
+                        'class' => 'btn btn-default pull-right'
+                    )
+                )
+            )
+        );
+    }
+
+    protected function displaySettingsOrderForm()
+    {
+        $send_status = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . self::MODULE_STATUS_NAME));
+        $branch_id = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . self::MODULE_BRANCH_ID_NAME));
+        // Init Fields form array
+        $fields_form = $this->getConfigOrderForm();
+
+        $helper = new HelperForm();
+
+        // Module, token and currentIndex
+        $helper->module = $this;
+        $helper->name_controller = $this->module->name;
+        $helper->token = Tools::getAdminTokenLite('AdminModules');
+        $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->module->name;
+
+        // Language
+        $helper->default_form_language = $this->context->language->id;
+        $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
+
+        // Title and toolbar
+        $helper->title = $this->module->displayName;
+        $helper->show_toolbar = true;
+        $helper->toolbar_scroll = true;
+        $helper->submit_action = 'submit'.self::MODULE_NAME;
+        $helper->toolbar_btn = array(
+            'save' => array(
+                'desc' => $this->module->l('Save'),
+                'href' => AdminController::$currentIndex.
+                '&configure='.$this->module->name.
+                '&save'.$this->module->name.
+                '&token='.Tools::getAdminTokenLite('AdminModules'),
+            ),
+            'back' => array(
+                'href' => AdminController::$currentIndex.'&token='.Tools::getAdminTokenLite('AdminModules'),
+                'desc' => $this->module->l('Back to list')
+            )
+        );
+
+        // Load current value
+        $helper->fields_value[self::IS_ORDER_SETTINGS_TAB] = 1;
+        $helper->fields_value[Tools::strtoupper(_DB_PREFIX_.self::MODULE_STATUS_NAME)] = $send_status;
+        $helper->fields_value[Tools::strtoupper(_DB_PREFIX_.self::MODULE_BRANCH_ID_NAME)] = $branch_id;
+
+        return $helper->generateForm($fields_form);
+    }
+
+    protected function getConfigOrderForm()
+    {
+        return array(
+            array(
+                'form' => array(
+                    'legend' => array(
+                        'title' => $this->module->l('Configuración de Ordenes'),
+                        'icon' => 'icon-cogs',
+                    ),
+                    'input' => array(
+                        array(
+                            'type' => 'hidden',
+                            'name' => self::IS_ORDER_SETTINGS_TAB,
+                        ),
                         array(
                             'type' => 'text',
                             'name' => Tools::strtoupper(_DB_PREFIX_.self::MODULE_BRANCH_ID_NAME),
                             'label' => $this->module->l('Codigo Sucursal'),
                             'maxlength' => 255,
                             'required' => false
+                        ),
+                        array(
+                            'type' => 'select',
+                            'name' => Tools::strtoupper(_DB_PREFIX_.self::MODULE_STATUS_NAME),
+                            'label' => $this->module->l('Estado de envio'),
+                            'options' => array(
+                                'query' => self::$status_types,
+                                'id' => 'id',
+                                'name' => 'name',
+                            ),
+                            'required' => true
                         ),
                     ),
                     'submit' => array(

@@ -30,7 +30,11 @@ if (!defined('_PS_VERSION_')) {
 
 class ChazkiHelper
 {
+    const NAMEL = "integration_chazki";
     const MSG_TYPE_ERROR = 'error';
+    const MSG_TYPE_OK = 'ok';
+
+    protected static $session = null;
     
     /**
      * @param $key
@@ -101,6 +105,34 @@ class ChazkiHelper
         $data = $session->get(self::NAMEL, array());
         $data['notifications'][$type][] = self::l($msg);
         $session->set(self::NAMEL, $data);
+    }
+
+    /**
+     * get session storage
+     *
+     * @return SessionHelper|\Symfony\Component\HttpFoundation\Session\Session|null
+     */
+    public static function getSession()
+    {
+        if (!self::$session) {
+            self::$session = class_exists('\Symfony\Component\HttpFoundation\Session\Session')
+                ? new \Symfony\Component\HttpFoundation\Session\Session()
+                : new SessionHelper();
+        }
+        return self::$session;
+    }
+
+    /**
+     * Translator alias
+     *
+     * @param $string string to translate
+     * @return mixed|string
+     */
+    public static function l($string)
+    {
+        $module = Module::getInstanceByName(self::NAMEL);
+
+        return $module->l($string);
     }
 
     /**
