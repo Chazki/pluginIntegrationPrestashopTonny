@@ -26,8 +26,9 @@
 
 class ChazkiShippingCost
 {
-    const CHAZKI_API_SHIPPING = 'https://us-central1-chazki-link-beta.cloudfunctions.net'.
-        '/cfuntions-integration-prestashop/api/prestashop/quote';
+    // const CHAZKI_API_SHIPPING = 'https://us-central1-chazki-link-beta.cloudfunctions.net'.
+    //    '/cfuntions-integration-prestashop/api/prestashop/quote';
+    const CHAZKI_API_SHIPPING = 'https://webhook.site/386c0442-b434-4b45-800e-174a207a9143';
     //'https://college-krash.herokuapp.com/api/callback';
 
     public function __construct($module)

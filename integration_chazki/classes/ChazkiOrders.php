@@ -31,17 +31,65 @@ class ChazkiOrders
         $this->module = $module;
     }
 
-    const CHAZKI_API_ORDERS = 'https://webhook.site/f3b87a30-a0aa-438f-b5ad-86c057d59f4f';
+    const CHAZKI_API_ORDERS = 'https://us-central1-chazki-link-beta.cloudfunctions.net/uploadClientOrders';
     
     public function validateOrder()
     {
         return true;
     }
 
-    public function generateOrder($params)
+    public function buildOrder($params)
     {
-        $bodyJSON = new stdClass();
-        $bodyJSON = json_encode($params);
+        $chazkiOrder = new stdClass();
+
+        $chazkiOrder->enterpriseKey = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_API_KEY_NAME));
+        $chazkiOrder->orders = array(
+            'trackCode' => $params['order']->reference,
+            'paymentMethodID' => 'PAGADO',
+            'paymentProofID' => 'BOLETA',
+            'serviceID' => 'SAME DAY',
+            'packageEnvelope' => 'Caja',
+            'packageWeight' => 0,
+            'packageSizeID' => 'S',
+            'packageQuantity' => intval($params['order_details']->product_quantity),
+            'productDescription' => $params['order_details']->product_name,
+            'productPrice' => floatval($params['order_details']->product_price),
+            'reverseLogistic' => 'NO',
+            'crossdocking' => 'NO',
+            'pickUpBranchID' => '',
+            'pickUpAddress' => Configuration::get('PS_SHOP_ADDR1'),
+            'pickUpPostalCode' => Configuration::get('PS_SHOP_CODE'),
+            'pickUpAddressReference' => '-',
+            'pickUpPrimaryReference' => '-',
+            'pickUpSecondaryReference' => Configuration::get('PS_SHOP_CITY'),
+            'pickUpNotes' => '',
+            'pickUpContactName' => Configuration::get('PS_SHOP_NAME'),
+            'pickUpContactPhone' => Configuration::get('PS_SHOP_PHONE'),
+            'pickUpContactDocumentTypeID' => 'RUC',
+            'pickUpContactDocumentNumber' => '12345678',
+            'pickUpContactEmail' => Configuration::get('PS_SHOP_EMAIL'),
+            'dropBranchID' => '',
+            'dropAddress' => $params['address']->address1,
+            'dropPostalCode' => $params['address']->postcode,
+            'dropAddressReference' => '',
+            'dropPrimaryReference' => '',
+            'dropSecondaryReference' => $params['address']->city,
+            'dropNotes' => '',
+            'dropContactName' => $params['customer']->firstname . ' ' . $params['customer']->lastname,
+            'dropContactPhone' => intval($params['address']->phone_mobile),
+            'dropContactDocumentTypeID' => 'DNI',
+            'dropContactDocumentNumber' => '12345678',
+            'dropContactEmail' => $params['customer']->email,
+            'shipmentPrice' => 0
+        );
+
+        return json_encode($chazkiOrder);
+
+    }
+
+    public function generateOrder($order)
+    {
+        $bodyJSON = $order;
         
         $api_chazki = new ChazkiApi($this->module);
         $api_chazki->sendPost(self::CHAZKI_API_ORDERS, $bodyJSON, array('enterprise-key: teienda'));

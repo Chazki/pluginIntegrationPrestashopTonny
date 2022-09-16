@@ -70,7 +70,6 @@ class Integration_chazki extends CarrierModule
      */
     public function install()
     {
-        include(dirname(__FILE__).'/sql/install.php');
         $this->chazki_carrier->installCarriers();
         $this->chazki_carrier->enableWebService();
         
@@ -82,13 +81,11 @@ class Integration_chazki extends CarrierModule
             $this->registerHook('updateCarrier') &&
             $this->registerHook('actionCarrierUpdate') &&
             $this->registerHook('displayAdminOrder') &&
-            $this->registerHook('actionAdminOrdersListingFieldsModifier') &&
             $this->registerHook('actionValidateOrder');
     }
 
     public function uninstall()
     {
-        //include(dirname(__FILE__).'/sql/uninstall.php');
         $chazki_uninstall = new ChazkiUninstall($this);
         $chazki_uninstall->uninstall();
 
@@ -107,6 +104,9 @@ class Integration_chazki extends CarrierModule
     {
         if (Context::getContext()->customer->logged == true)
         {
+            //$id_address_delivery = Context::getContext()->cart->id_address_delivery;
+            //$address = new Address($id_address_delivery);
+
             $chazki_ship = new ChazkiShippingCost($this);
             return $chazki_ship->run($params, $shipping_cost);
         }
@@ -153,88 +153,43 @@ class Integration_chazki extends CarrierModule
         $orderStatusObj = $params['orderStatus'];
         
         $address_id = $orderObj->id_address_delivery;
-        $address = ChazkiCollector::getAddress(strval($address_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $addressJSON = ChazkiCollector::getAddress(strval($address_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $address_decoded = json_decode($addressJSON);
         $customer_id = $orderObj->id_customer;
-        $customer = ChazkiCollector::getCustomers(strval($customer_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $customerJSON = ChazkiCollector::getCustomers(strval($customer_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $customer_decoded = json_decode($customerJSON);
         $order_id = $orderObj->id;
         $orderJSON = ChazkiCollector::getOrder(strval($order_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
         $order_decoded = json_decode($orderJSON);
+        $orderDetailsJSON = ChazkiCollector::getOrderDet($order_decoded->order->associations->order_rows[0]->id, 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $order_details_decoded = json_decode($orderDetailsJSON);
 
-        $order_details = ChazkiCollector::getOrderDet($order_decoded->order->associations->order_rows[0]->id, 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $chazkiOrder = array(
+            'customer' => $customer_decoded->customer,
+            'address' => $address_decoded->address,
+            'order' => $order_decoded->order,
+            'order_details' => $order_details_decoded->order_detail
+        );
 
-        echo "<pre>";
-        print_r($orderObj);
-        echo "<pre>";
+        $new_order = new ChazkiOrders($this);
+
+        if($new_order->validateOrder()) {
+            $chazkiorderreturn = $new_order->buildOrder($chazkiOrder);
+            $new_order->generateOrder($chazkiorderreturn);
+
+        }
 
         // echo "<pre>";
-        // var_dump($orderStatusObj);
+        // print_r($chazkiorderreturn);
         // echo "<pre>";
         
-        die();
-        // $shop_address1 = Configuration::get('PS_SHOP_ADDR1');
-        // $shop_address2 = Configuration::get('PS_SHOP_ADDR2');
-        // $shop_contac_phone = Configuration::get('PS_SHOP_PHONE');
-        // $shop_city = Configuration::get('PS_SHOP_CITY');
-        // $shop_zipcode = Configuration::get('PS_SHOP_CODE');
-        // $shop_email = Configuration::get('PS_SHOP_EMAIL');
+        // die();
     }
 
     public function hookActionCarrierUpdate($params)
     {
-        if ($params['carrier']->id_reference == Configuration::get(Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER_reference'))) {
-            Configuration::updateValue(
-                Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER'),
-                $params['carrier']->id
-            );
-        }
-    }
-
-    /**
-     * Edit order grid display
-     *
-     * @param array $params
-     * @throws PrestaShopException
-     */
-    public function hookActionAdminOrdersListingFieldsModifier($params)
-    {
-        $this->hookActionAdminOrdersListingFieldsModifierBody($params);
-    }
-
-    /**
-     * Edit order grid display
-     *
-     * @param array $params
-     * @throws PrestaShopException
-     */
-    public function hookActionAdminOrdersListingFieldsModifierBody(&$params)
-    {
-        if (isset($params['select'])) {
-            $table = _DB_PREFIX_ . "integration_chazki";
-            $params['select'] .=
-                    ", $table.tracking_number as spring_service, 
-                    IFNULL($table.status_code, -10) as spring_status ";
-
-            $params['join'] .= " LEFT JOIN $table ON $table.id_order=a.id_order";
-
-            $params['fields']['spring_service'] = array(
-                'title' => $this->displayName,
-                'class' => 'fixed-width-lg',
-                'callback' => 'printTrackTrace',
-                'callback_object' => 'ChazkiTools',
-                'search' => false,
-                'orderby' => false,
-                'remove_onclick' => true,
-            );
-
-            $params['fields']['spring_status'] = array(
-                    'title' => '',
-                    'class' => 'fixed-width-sm',
-                    'callback' => 'printLabelIcon',
-                    'callback_object' => 'ChazkiTools',
-                    'search' => false,
-                    'orderby' => false,
-                    'remove_onclick' => true,
-            );
+        if ($params['carrier']->id_reference == Configuration::get(_DB_PREFIX_ . 'CHAZKI_SERVICE_reference')) {
+            Configuration::updateValue(_DB_PREFIX_ . 'SAME_DAY', $params['carrier']->id);
         }
     }
 }
