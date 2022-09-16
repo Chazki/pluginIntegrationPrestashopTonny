@@ -61,15 +61,6 @@ class ChazkiApi
 
         $response = curl_exec($curl);
         $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-<<<<<<< HEAD
-=======
-        
-        echo "<pre>";
-        print_r($response);
-        echo "</pre>";
-
-        die();
->>>>>>> 6c205ad (feat: adding webhook configuration)
         curl_close($curl);
 
         if ($http_status > 499) {
