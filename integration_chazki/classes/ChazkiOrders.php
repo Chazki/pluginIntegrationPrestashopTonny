@@ -31,7 +31,7 @@ class ChazkiOrders
         $this->module = $module;
     }
 
-    const CHAZKI_API_ORDERS = 'https://us-central1-chazki-link-dev.cloudfunctions.net/uploadClientOrders';
+    const CHAZKI_API_ORDERS = 'https://us-central1-chazki-link-beta.cloudfunctions.net/uploadClientOrders';
     
     public function validateOrder()
     {
@@ -47,7 +47,7 @@ class ChazkiOrders
             'trackCode' => $params['order']->reference,
             'paymentMethodID' => 'PAGADO',
             'paymentProofID' => 'BOLETA',
-            'serviceID' => 'EXPRESS',
+            'serviceID' => 'SAME DAY',
             'packageEnvelope' => 'Caja',
             'packageWeight' => 0,
             'packageSizeID' => 'S',
@@ -59,8 +59,8 @@ class ChazkiOrders
             'pickUpBranchID' => '',
             'pickUpAddress' => Configuration::get('PS_SHOP_ADDR1'),
             'pickUpPostalCode' => Configuration::get('PS_SHOP_CODE'),
-            'pickUpAddressReference' => '',
-            'pickUpPrimaryReference' => '',
+            'pickUpAddressReference' => '-',
+            'pickUpPrimaryReference' => '-',
             'pickUpSecondaryReference' => Configuration::get('PS_SHOP_CITY'),
             'pickUpNotes' => '',
             'pickUpContactName' => Configuration::get('PS_SHOP_NAME'),
