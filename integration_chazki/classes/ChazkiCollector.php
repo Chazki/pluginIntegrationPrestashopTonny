@@ -79,6 +79,22 @@ class ChazkiCollector
         return $response;
     }
 
+    public function getOrderXML($resource_id, $chazkiAccess)
+    {
+        $curl = curl_init();
+        $url = 'http://localhost/tienda-prueba-ps/api/orders/' . $resource_id;
+        curl_setopt_array($curl, array(
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
+            CURLOPT_USERPWD => $chazkiAccess . ":''",
+        ));
+
+        $response = curl_exec($curl);
+
+        return $response;
+    }
+
     public function getOrderDet($resource_id, $chazkiAccess)
     {
         $curl = curl_init();
@@ -95,24 +111,42 @@ class ChazkiCollector
         return $response;
     }
 
-    public function updateOrderStatus($resource_id, $chazkiAccess)
+    public function updateOrderStatus($resource, $chazkiAccess)
     {
+
         $curl = curl_init();
-        $url = 'http://localhost/tienda-prueba-ps/api/order_details/' . $resource_id . '?output_format=JSON';
+        $resource_id = $resource['orderID'];
+        $url = 'http://localhost/tienda-prueba-ps/api/orders/' . $resource_id;
+        curl_setopt_array($curl, array(
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_URL => $url,
+            CURLOPT_USERPWD => $chazkiAccess . ":''",
+        ));
+
+        $orderData = simplexml_load_string(curl_exec($curl), 'SimpleXMLElement', LIBXML_NOCDATA);
+
+        $updatedfields = $orderData->order->children();
+        $updatedfields->current_state = $resource['orderStatus'];
+
+        $curl = curl_init();
+        $url = 'http://localhost/tienda-prueba-ps/api/orders/' . $resource_id;
         curl_setopt_array(
             $curl,
             array(
                 CURLOPT_RETURNTRANSFER => 1,
                 CURLOPT_URL => $url,
-                CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
                 CURLOPT_USERPWD => $chazkiAccess . ":''",
                 CURLOPT_CUSTOMREQUEST => "PUT",
-                CURLOPT_POSTFIELDS => $data
+                CURLOPT_POSTFIELDS => $orderData->asXML()
             )
         );
 
         $response = curl_exec($curl);
 
-        return $response;
+        // echo "<pre>";
+        // print_r($response);
+        // echo "<pre>";
+        
+        // die();
     }
 }
