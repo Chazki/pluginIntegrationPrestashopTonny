@@ -42,7 +42,9 @@ class ChazkiOrders
     {
         $chazkiOrder = new stdClass();
 
-        $chazkiOrder->enterpriseKey = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_API_KEY_NAME));
+        $chazkiOrder->enterpriseKey = ChazkiHelper::get(
+            Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_API_KEY_NAME)
+        );
         $chazkiOrder->orders = array(
             'trackCode' => $params['order']->reference,
             'paymentMethodID' => 'PAGADO',
@@ -51,9 +53,9 @@ class ChazkiOrders
             'packageEnvelope' => 'Caja',
             'packageWeight' => 0,
             'packageSizeID' => 'S',
-            'packageQuantity' => intval($params['order_details']->product_quantity),
+            'packageQuantity' => (int)$params['order_details']->product_quantity,
             'productDescription' => $params['order_details']->product_name,
-            'productPrice' => floatval($params['order_details']->product_price),
+            'productPrice' => (float)$params['order_details']->product_price,
             'reverseLogistic' => 'NO',
             'crossdocking' => 'NO',
             'pickUpBranchID' => '',
@@ -76,7 +78,7 @@ class ChazkiOrders
             'dropSecondaryReference' => $params['address']->city,
             'dropNotes' => '',
             'dropContactName' => $params['customer']->firstname . ' ' . $params['customer']->lastname,
-            'dropContactPhone' => intval($params['address']->phone_mobile),
+            'dropContactPhone' => (int)$params['address']->phone_mobile,
             'dropContactDocumentTypeID' => 'DNI',
             'dropContactDocumentNumber' => '12345678',
             'dropContactEmail' => $params['customer']->email,
@@ -86,7 +88,6 @@ class ChazkiOrders
         );
 
         return json_encode($chazkiOrder);
-
     }
 
     public function generateOrder($order)
