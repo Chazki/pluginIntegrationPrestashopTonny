@@ -80,6 +80,8 @@ class ChazkiOrders
             'dropContactDocumentTypeID' => 'DNI',
             'dropContactDocumentNumber' => '12345678',
             'dropContactEmail' => $params['customer']->email,
+            'providerID' => $params['order']->id,
+            'providerName' => 'PRESTA',
             'shipmentPrice' => 0
         );
 
