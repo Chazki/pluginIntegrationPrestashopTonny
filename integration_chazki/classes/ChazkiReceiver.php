@@ -6,7 +6,7 @@ if($data = json_decode(file_get_contents('php://input'))) {
         'orderStatus' => (int)$data->order_status,
         'orderID' => (string)$data->order_id
     );
-    ChazkiCollector::updateOrderStatus($updateResource, 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+    ChazkiCollector::updateOrderStatus($updateResource, Configuration::get(_DB_PREFIX_.'CHAZKI_WEB_SERVICE_API_KEY'));
 } else {
     $data = "no entro al if";
 }

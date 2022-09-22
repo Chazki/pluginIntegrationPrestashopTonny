@@ -74,6 +74,7 @@ class Integration_chazki extends CarrierModule
         $this->chazki_carrier->installCarriers();
         $this->chazki_carrier->enableWebService();
         
+        ChazkiHelper::updateValue(_DB_PREFIX_.'CHAZKI_WEB_SERVICE_API_KEY', $this->chazki_carrier::$chazkiKey);
         Configuration::updateValue('INTEGATION_CHAZKI_LIVE_MODE', false);
 
         return parent::install() &&
@@ -153,15 +154,15 @@ class Integration_chazki extends CarrierModule
         $orderStatusObj = $params['orderStatus'];
         
         $address_id = $orderObj->id_address_delivery;
-        $addressJSON = ChazkiCollector::getAddress(strval($address_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $addressJSON = ChazkiCollector::getAddress(strval($address_id), $this->chazki_carrier::$chazkiKey);
         $address_decoded = json_decode($addressJSON);
         $customer_id = $orderObj->id_customer;
-        $customerJSON = ChazkiCollector::getCustomers(strval($customer_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $customerJSON = ChazkiCollector::getCustomers(strval($customer_id), $this->chazki_carrier::$chazkiKey);
         $customer_decoded = json_decode($customerJSON);
         $order_id = $orderObj->id;
-        $orderJSON = ChazkiCollector::getOrder(strval($order_id), 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $orderJSON = ChazkiCollector::getOrder(strval($order_id), $this->chazki_carrier::$chazkiKey);
         $order_decoded = json_decode($orderJSON);
-        $orderDetailsJSON = ChazkiCollector::getOrderDet($order_decoded->order->associations->order_rows[0]->id, 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5');
+        $orderDetailsJSON = ChazkiCollector::getOrderDet($order_decoded->order->associations->order_rows[0]->id, $this->chazki_carrier::$chazkiKey);
         $order_details_decoded = json_decode($orderDetailsJSON);
 
         $chazkiOrder = array(

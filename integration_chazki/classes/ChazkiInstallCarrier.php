@@ -32,10 +32,25 @@ class ChazkiInstallCarrier
 
     const CHAZKI_TRACKING_URL_CARRIER = 'https://nintendo-dev.chazki.com/trackcodeTracking/@';
     const CARRIER_ID_SERVICE_CODE = 'CARRIER_ID_SERVICE_CODE';
+    public static $chazkiKey = '';
 
+    
     public function __construct($module)
     {
         $this->module = $module;
+    }
+
+    public function generateKey()
+    {
+        $characters = 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789';
+        $key = '';
+
+        for ($i=0; $i < 32; $i++) { 
+            $key = $key . $characters[rand(0, strlen($characters))];
+        }
+
+        self::$chazkiKey = $key;
+        return $key;
     }
 
     /**
@@ -47,7 +62,8 @@ class ChazkiInstallCarrier
     public function chazkiAccess()
     {
         $chazkiAccess = new WebserviceKey();
-        $chazkiAccess->key = 'VWwm3qohGCYXSDP31ZhBsPMMhcNbkWk5';
+
+        $chazkiAccess->key = $this->generateKey();
         $chazkiAccess->save();
 
         $permissions = [
