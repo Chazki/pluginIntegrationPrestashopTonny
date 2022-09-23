@@ -37,6 +37,7 @@ require_once(dirname(__FILE__).'/classes/ChazkiTools.php');
 require_once(dirname(__FILE__).'/classes/ChazkiApi.php');
 require_once(dirname(__FILE__).'/classes/ChazkiShippingCost.php');
 require_once(dirname(__FILE__).'/classes/ChazkiOrders.php');
+require_once(dirname(__FILE__).'/classes/ChazkiWebhooks.php');
 
 class Integration_chazki extends CarrierModule
 {
