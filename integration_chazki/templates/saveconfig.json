@@ -1,0 +1,11 @@
+{
+    "enterpriseKey": "",
+    "urlWebHook": "",
+    "hookCustomStatus": {
+        "GOTO_PICK": "3",
+        "GOTO_DELIVER": "4",
+        "DELIVERED": "5",
+        "CANCELED": "6"
+    },
+    "isCrossDocking": false
+}

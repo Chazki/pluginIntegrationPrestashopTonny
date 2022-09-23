@@ -29,6 +29,7 @@ class ChazkiCollector
     public function __construct($module)
     {
         $this->module = $module;
+        // $this->url = _PS_BASE_URL_ . __PS_BASE_URI__;
     }
 
     public function getAddress($resource_id, $chazkiAccess)
@@ -142,11 +143,5 @@ class ChazkiCollector
         );
 
         $response = curl_exec($curl);
-
-        // echo "<pre>";
-        // print_r($response);
-        // echo "<pre>";
-        
-        // die();
     }
 }

@@ -1,0 +1,18 @@
+{
+    "enterpriseKey": "",
+    "webhookBody":{
+        "all":{
+            "order_trackcode": "$trackcode",
+            "order_status": "$status",
+            "order_update": "$updateAt",
+            "delivery_url": "$urlTracking",
+            "order_id": "$providerID"
+        }
+    },
+    "status": [
+        "GOTO_PICK",
+        "GOTO_DELIVER",
+        "DELIVERED",
+        "CANCELED"
+    ]
+}
