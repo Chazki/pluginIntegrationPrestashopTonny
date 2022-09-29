@@ -254,20 +254,20 @@ class ChazkiInstallCarrier
 
         foreach ($zones as $zone) {
             $carrier->addZone($zone['id_zone']);
-            $carrier->addDeliveryPrice(array(
+            $carrier->addDeliveryPrice(array(array(
                 'id_carrier' => $carrier->id,
                 'id_range_price' => (int) $rangePrice->id,
                 'id_range_weight' => null,
                 'id_zone' => (int) $zone['id_zone'],
                 'price' => '25'
-            ));
-            $carrier->addDeliveryPrice(array(
+            )));
+            $carrier->addDeliveryPrice(array(array(
                 'id_carrier' => $carrier->id,
                 'id_range_price' => null,
                 'id_range_weight' => (int) $rangeWeight->id,
                 'id_zone' => (int) $zone['id_zone'],
                 'price' => '25'
-            ));
+            )));
         }
     }
 }
