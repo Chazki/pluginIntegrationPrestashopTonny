@@ -81,7 +81,6 @@ class Integration_chazki extends CarrierModule
      */
     public function install()
     {
-        include(dirname(__FILE__).'/sql/install.php');
         $this->chazki_carrier->installCarriers();
         $this->chazki_carrier->enableWebService();
         $baseUrl = $this->getUrl();
@@ -95,7 +94,6 @@ class Integration_chazki extends CarrierModule
 
     public function uninstall()
     {
-        //include(dirname(__FILE__).'/sql/uninstall.php');
         $chazki_uninstall = new ChazkiUninstall($this);
         $chazki_uninstall->uninstall();
 
