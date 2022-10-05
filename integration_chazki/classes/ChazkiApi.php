@@ -26,6 +26,9 @@
 
 class ChazkiApi
 {
+    const BETA_ENV = 'https://us-central1-chazki-link-beta';
+    const PROD_ENV = 'https://us-central1-chazki-link';
+    
     public function __construct($module)
     {
         $this->module = $module;
@@ -47,10 +50,12 @@ class ChazkiApi
             $headers = array('Content-Type:application/json');
         }
 
+        $url = BETA_ENV.$postURL;
+
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL => $postUrl,
+            CURLOPT_URL => $url,
             CURLOPT_SSL_VERIFYPEER => 0,
             CURLOPT_SSL_VERIFYHOST => 0,
             CURLOPT_HTTPHEADER => $headers,
