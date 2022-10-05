@@ -49,9 +49,9 @@ class Integration_chazki extends CarrierModule
         'actionCarrierUpdate',
         'displayAdminOrder',
         'actionValidateOrder',
-        'actionValidateOrder',
         'actionOrderGridDefinitionModifier',
-        'ActionOrderGridQueryBuilderModifier'
+        'actionPaymentConfirmation',
+        'actionOrderGridQueryBuilderModifier'
     );
 
     public function __construct()
@@ -84,7 +84,8 @@ class Integration_chazki extends CarrierModule
         include(dirname(__FILE__).'/sql/install.php');
         $this->chazki_carrier->installCarriers();
         $this->chazki_carrier->enableWebService();
-        
+        $baseUrl = $this->getUrl();
+        Configuration::updateValue('CHAZKI_SHOP_URL', $baseUrl);
         ChazkiHelper::updateValue(_DB_PREFIX_.'CHAZKI_WEB_SERVICE_API_KEY', $this->chazki_carrier::$chazkiKey);
         Configuration::updateValue('INTEGATION_CHAZKI_LIVE_MODE', false);
 
@@ -101,6 +102,31 @@ class Integration_chazki extends CarrierModule
         return parent::uninstall();
     }
 
+    public function getUrl()
+    {
+        if(Configuration::get(Tools::strtoupper(_DB_PREFIX_.'SSL_ENABLED')))
+        {
+            $domain = \Db::getInstance()->getValue(
+                'SELECT `domain_ssl` FROM `' . _DB_PREFIX_ . 'shop_url` WHERE main = 1'
+            );
+            $uri = \Db::getInstance()->getValue(
+                'SELECT `physical_uri` FROM `' . _DB_PREFIX_ . 'shop_url` WHERE main = 1'
+            );
+            $url = $domain.''.$uri;
+        }
+        else
+        {
+            $domain = \Db::getInstance()->getValue(
+                'SELECT `domain` FROM `' . _DB_PREFIX_ . 'shop_url` WHERE main = 1'
+            );
+            $uri = \Db::getInstance()->getValue(
+                'SELECT `physical_uri` FROM `' . _DB_PREFIX_ . 'shop_url` WHERE main = 1'
+            );
+            $url = $domain.''.$uri;
+        }
+
+        return $url;
+    }
     /**
      * Load the configuration form
      */
@@ -148,48 +174,76 @@ class Integration_chazki extends CarrierModule
     public function hookUpdateCarrier($params)
     {
         /**
-         * Not needed since 1.5
+         * Not needed since 1.5 
          * You can identify the carrier by the id_reference
         */
     }
 
+    public function hookActionPaymentConfirmation($params)
+    {
+        if( Configuration::get('PS_CHAZKI_STATUS') == 'PAYMENT')
+        {
+            $order_id = $params['id_order'];
+            $orderJSON = ChazkiCollector::getOrder(strval($order_id), $this->chazki_carrier::$chazkiKey);
+            $order_decoded = json_decode($orderJSON);
+            $customer_id = $order_decoded->id_customer;
+            $customerJSON = ChazkiCollector::getCustomers(strval($customer_id), $this->chazki_carrier::$chazkiKey);
+            $customer_decoded = json_decode($customerJSON);
+            $address_id = $order_decoded->id_address_delivery;
+            $addressJSON = ChazkiCollector::getAddress(strval($address_id), $this->chazki_carrier::$chazkiKey);
+            $address_decoded = json_decode($addressJSON);
+            $orderDetailsJSON = ChazkiCollector::getOrderDet($order_decoded->order->associations->order_rows[0]->id, $this->chazki_carrier::$chazkiKey);
+            $order_details_decoded = json_decode($orderDetailsJSON);
+
+            $chazkiOrder = array(
+                'customer' => $customer_decoded->customer,
+                'address' => $address_decoded->address,
+                'order' => $order_decoded->order,
+                'order_details' => $order_details_decoded->order_detail
+            );
+
+            $new_order = new ChazkiOrders($this);
+
+            if($new_order->validateOrder()) {
+                $chazkiorderreturn = $new_order->buildOrder($chazkiOrder);
+                $new_order->generateOrder($chazkiorderreturn);
+            }
+        }
+    }
+
     public function hookActionValidateOrder($params)
     {
-        $orderObj = $params['order'];
-        $orderStatusObj = $params['orderStatus'];
-        
-        $address_id = $orderObj->id_address_delivery;
-        $addressJSON = ChazkiCollector::getAddress(strval($address_id), $this->chazki_carrier::$chazkiKey);
-        $address_decoded = json_decode($addressJSON);
-        $customer_id = $orderObj->id_customer;
-        $customerJSON = ChazkiCollector::getCustomers(strval($customer_id), $this->chazki_carrier::$chazkiKey);
-        $customer_decoded = json_decode($customerJSON);
-        $order_id = $orderObj->id;
-        $orderJSON = ChazkiCollector::getOrder(strval($order_id), $this->chazki_carrier::$chazkiKey);
-        $order_decoded = json_decode($orderJSON);
-        $orderDetailsJSON = ChazkiCollector::getOrderDet($order_decoded->order->associations->order_rows[0]->id, $this->chazki_carrier::$chazkiKey);
-        $order_details_decoded = json_decode($orderDetailsJSON);
+        if( Configuration::get('PS_CHAZKI_STATUS') == 'NEW')
+        {
+            $orderObj = $params['order'];
+            $orderStatusObj = $params['orderStatus'];
+            
+            $address_id = $orderObj->id_address_delivery;
+            $addressJSON = ChazkiCollector::getAddress(strval($address_id), $this->chazki_carrier::$chazkiKey);
+            $address_decoded = json_decode($addressJSON);
+            $customer_id = $orderObj->id_customer;
+            $customerJSON = ChazkiCollector::getCustomers(strval($customer_id), $this->chazki_carrier::$chazkiKey);
+            $customer_decoded = json_decode($customerJSON);
+            $order_id = $orderObj->id;
+            $orderJSON = ChazkiCollector::getOrder(strval($order_id), $this->chazki_carrier::$chazkiKey);
+            $order_decoded = json_decode($orderJSON);
+            $orderDetailsJSON = ChazkiCollector::getOrderDet($order_decoded->order->associations->order_rows[0]->id, $this->chazki_carrier::$chazkiKey);
+            $order_details_decoded = json_decode($orderDetailsJSON);
 
-        $chazkiOrder = array(
-            'customer' => $customer_decoded->customer,
-            'address' => $address_decoded->address,
-            'order' => $order_decoded->order,
-            'order_details' => $order_details_decoded->order_detail
-        );
+            $chazkiOrder = array(
+                'customer' => $customer_decoded->customer,
+                'address' => $address_decoded->address,
+                'order' => $order_decoded->order,
+                'order_details' => $order_details_decoded->order_detail
+            );
 
-        $new_order = new ChazkiOrders($this);
+            $new_order = new ChazkiOrders($this);
 
-        if($new_order->validateOrder()) {
-            $chazkiorderreturn = $new_order->buildOrder($chazkiOrder);
-            $new_order->generateOrder($chazkiorderreturn);
-
-        }
-
-        // echo "<pre>";
-        // print_r($chazkiorderreturn);
-        // echo "<pre>";
-        
-        // die();
+            if($new_order->validateOrder()) {
+                $chazkiorderreturn = $new_order->buildOrder($chazkiOrder);
+                $new_order->generateOrder($chazkiorderreturn);
+            }
+        }     
     }
 
     public function hookActionCarrierUpdate($params)

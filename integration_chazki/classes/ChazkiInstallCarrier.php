@@ -42,9 +42,9 @@ class ChazkiInstallCarrier
 
     public function generateKey()
     {
-        $characters = 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789';
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789';
         $key = '';
-
+        
         for ($i=0; $i < 32; $i++) {
             $key = $key . $characters[rand(0, Tools::strlen($characters))];
         }
