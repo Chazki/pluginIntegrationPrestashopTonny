@@ -31,7 +31,7 @@ class ChazkiOrders
         $this->module = $module;
     }
 
-    const CHAZKI_API_ORDERS = '.cloudfunctions.net/uploadClientOrders';
+    const CHAZKI_API_ORDERS = 'https://us-central1-chazki-link-beta.cloudfunctions.net/uploadClientOrders';
     
     public function validateOrder()
     {
@@ -95,6 +95,6 @@ class ChazkiOrders
         $bodyJSON = $order;
         
         $api_chazki = new ChazkiApi($this->module);
-        $api_chazki->sendPost(self::CHAZKI_API_ORDERS, $bodyJSON, array('enterprise-key: teienda'));
+        $api_chazki->sendPost(self::CHAZKI_API_ORDERS, $bodyJSON);
     }
 }
