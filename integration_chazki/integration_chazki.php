@@ -43,6 +43,17 @@ class Integration_chazki extends CarrierModule
 {
     protected $config_form = false;
     protected $carrier_id_service_code;
+    const HOOKS = array(
+        'header',
+        'backOfficeHeader',
+        'updateCarrier',
+        'actionCarrierUpdate',
+        'displayAdminOrder',
+        'actionValidateOrder',
+        'actionValidateOrder',
+        'actionOrderGridDefinitionModifier',
+        'ActionOrderGridQueryBuilderModifier'
+    );
 
     public function __construct()
     {
@@ -79,13 +90,7 @@ class Integration_chazki extends CarrierModule
         Configuration::updateValue('INTEGATION_CHAZKI_LIVE_MODE', false);
 
         return parent::install() &&
-            $this->registerHook('header') &&
-            $this->registerHook('backOfficeHeader') &&
-            $this->registerHook('updateCarrier') &&
-            $this->registerHook('actionCarrierUpdate') &&
-            $this->registerHook('displayAdminOrder') &&
-            $this->registerHook('actionAdminOrdersListingFieldsModifier') &&
-            $this->registerHook('actionValidateOrder');
+            $this->registerHook(self::HOOKS);
     }
 
     public function uninstall()
@@ -199,51 +204,61 @@ class Integration_chazki extends CarrierModule
     }
 
     /**
-     * Edit order grid display
+     * Hook allows to modify Order grid definition since 1.7.7.0
      *
      * @param array $params
-     * @throws PrestaShopException
      */
-    public function hookActionAdminOrdersListingFieldsModifier($params)
+    public function hookActionOrderGridDefinitionModifier(array $params)
     {
-        $this->hookActionAdminOrdersListingFieldsModifierBody($params);
+        if (empty($params['definition'])) {
+            return;
+        }
+
+        /** @var PrestaShop\PrestaShop\Core\Grid\Definition\GridDefinitionInterface $definition */
+        $definition = $params['definition'];
+
+        $column = new PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\LinkColumn('link_label');
+        $column->setName($this->l('Etiqueta Chazki'));
+        $column->setOptions([
+            'route' => 'admin_orders_label',
+            'route_param_field' => 'chazki_label',
+            'route_param_name' => 'reference',
+            'field' => 'chazki_label',
+            'target' => '_blank'
+        ]);
+
+        $definition
+            ->getColumns()
+            ->addAfter(
+                'payment',
+                $column
+            )
+        ;
     }
 
     /**
-     * Edit order grid display
+     * Hook allows to modify Order query builder and add custom sql statements since 1.7.7.0
      *
      * @param array $params
-     * @throws PrestaShopException
      */
-    public function hookActionAdminOrdersListingFieldsModifierBody(&$params)
+    public function hookActionOrderGridQueryBuilderModifier(array $params)
     {
-        if (isset($params['select'])) {
-            $table = _DB_PREFIX_ . "integration_chazki";
-            $params['select'] .=
-                    ", $table.tracking_number as spring_service, 
-                    IFNULL($table.status_code, -10) as spring_status ";
-
-            $params['join'] .= " LEFT JOIN $table ON $table.id_order=a.id_order";
-
-            $params['fields']['spring_service'] = array(
-                'title' => $this->displayName,
-                'class' => 'fixed-width-lg',
-                'callback' => 'printTrackTrace',
-                'callback_object' => 'ChazkiTools',
-                'search' => false,
-                'orderby' => false,
-                'remove_onclick' => true,
-            );
-
-            $params['fields']['spring_status'] = array(
-                    'title' => '',
-                    'class' => 'fixed-width-sm',
-                    'callback' => 'printLabelIcon',
-                    'callback_object' => 'ChazkiTools',
-                    'search' => false,
-                    'orderby' => false,
-                    'remove_onclick' => true,
-            );
+        if (empty($params['search_query_builder']) || empty($params['search_criteria'])) {
+            return;
         }
+
+        /** @var Doctrine\DBAL\Query\QueryBuilder $searchQueryBuilder */
+        $searchQueryBuilder = $params['search_query_builder'];
+
+        $searchQueryBuilder->addSelect(
+            'o.`id_carrier`, car.`id_reference` AS `carrier_reference`, CASE WHEN LOCATE( "CHAZKI", UPPER(car.`name`)) > 0 THEN o.`reference` ELSE "" END AS `chazki_label`'
+        );
+
+        $searchQueryBuilder->leftJoin(
+            'o',
+            '`' . _DB_PREFIX_ . 'carrier`',
+            'car',
+            'car.`id_carrier` = o.`id_carrier`'
+        );
     }
 }

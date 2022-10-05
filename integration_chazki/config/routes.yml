@@ -1,0 +1,6 @@
+admin_orders_label:
+  path: admin_orders_label/chazki
+  methods: [GET]
+  defaults:
+    _controller: 'Integration_chazki\Controller\Admin\LabelController::demoAction'
+    _disable_module_prefix: true
