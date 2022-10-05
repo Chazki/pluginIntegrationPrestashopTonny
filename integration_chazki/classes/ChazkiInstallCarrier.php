@@ -26,11 +26,14 @@
 
 class ChazkiInstallCarrier
 {
+    const BETA_ENV = 'https://nintendo-beta';
+    const PROD_ENV = 'https://nintendo';
+    
     public static $chazki_services = array(
         'CHAZKI_SERVICE_CARRIER' => 'Chazki',
     );
 
-    const CHAZKI_TRACKING_URL_CARRIER = 'https://nintendo-dev.chazki.com/trackcodeTracking/@';
+    const CHAZKI_TRACKING_URL_CARRIER = BETA_ENV.'.chazki.com/trackcodeTracking/@';
     const CARRIER_ID_SERVICE_CODE = 'CARRIER_ID_SERVICE_CODE';
     public static $chazkiKey = '';
 

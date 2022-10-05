@@ -26,7 +26,7 @@
 
 class ChazkiShippingCost
 {
-    const CHAZKI_API_SHIPPING = 'https://us-central1-chazki-link-beta.cloudfunctions.net'.
+    const CHAZKI_API_SHIPPING = '.cloudfunctions.net'.
         '/cfuntions-integration-prestashop/api/prestashop/quote';
     
     public function __construct($module)

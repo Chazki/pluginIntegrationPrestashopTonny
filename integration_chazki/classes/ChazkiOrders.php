@@ -31,7 +31,7 @@ class ChazkiOrders
         $this->module = $module;
     }
 
-    const CHAZKI_API_ORDERS = 'https://us-central1-chazki-link-beta.cloudfunctions.net/uploadClientOrders';
+    const CHAZKI_API_ORDERS = '.cloudfunctions.net/uploadClientOrders';
     
     public function validateOrder()
     {
