@@ -45,8 +45,8 @@ class ChazkiInstallCarrier
         $characters = 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789';
         $key = '';
 
-        for ($i=0; $i < 32; $i++) { 
-            $key = $key . $characters[rand(0, strlen($characters))];
+        for ($i=0; $i < 32; $i++) {
+            $key = $key . $characters[rand(0, Tools::strlen($characters))];
         }
 
         self::$chazkiKey = $key;

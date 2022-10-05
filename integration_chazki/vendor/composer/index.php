@@ -24,18 +24,12 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-if ($data = json_decode(Tools::file_get_contents('php://input'))) {
-    require_once(dirname(__FILE__).'/ChazkiCollector.php');
-    // echo "<pre>";
-    // print_r(_PS_BASE_URL_ . __PS_BASE_URI__);
-    // echo "</pre>";
+header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 
-    // die();
-    $updateResource = array(
-        'orderStatus' => (int)$data->order_status,
-        'orderID' => (string)$data->order_id
-    );
-    ChazkiCollector::updateOrderStatus($updateResource, Configuration::get(_DB_PREFIX_.'CHAZKI_WEB_SERVICE_API_KEY'));
-} else {
-    $data = "no entro al if";
-}
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header('Cache-Control: post-check=0, pre-check=0', false);
+header('Pragma: no-cache');
+
+header('Location: ../');
+exit;

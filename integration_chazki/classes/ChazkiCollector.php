@@ -142,6 +142,6 @@ class ChazkiCollector
             )
         );
 
-        $response = curl_exec($curl);
+        curl_exec($curl);
     }
 }
