@@ -29,13 +29,13 @@ class ChazkiCollector
     public function __construct($module)
     {
         $this->module = $module;
-        // $this->url = _PS_BASE_URL_ . __PS_BASE_URI__;
+        $this->url = Configuration::get('CHAZKI_SHOP_URL');
     }
 
     public function getAddress($resource_id, $chazkiAccess)
     {
         $curl = curl_init();
-        $url = 'http://localhost/tienda-prueba-ps/api/addresses/' . $resource_id . '?output_format=JSON';
+        $url = 'http://'.$this->url.'api/addresses/' . $resource_id . '?output_format=JSON';
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $url,
@@ -51,7 +51,7 @@ class ChazkiCollector
     public function getCustomers($resource_id, $chazkiAccess)
     {
         $curl = curl_init();
-        $url = 'http://localhost/tienda-prueba-ps/api/customers/' . $resource_id . '?output_format=JSON';
+        $url = 'http://'.$this->url.'api/customers/' . $resource_id . '?output_format=JSON';
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $url,
@@ -67,7 +67,7 @@ class ChazkiCollector
     public function getOrder($resource_id, $chazkiAccess)
     {
         $curl = curl_init();
-        $url = 'http://localhost/tienda-prueba-ps/api/orders/' . $resource_id . '?output_format=JSON';
+        $url = 'http://'.$this->url.'api/orders/' . $resource_id . '?output_format=JSON';
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $url,
@@ -83,7 +83,7 @@ class ChazkiCollector
     public function getOrderXML($resource_id, $chazkiAccess)
     {
         $curl = curl_init();
-        $url = 'http://localhost/tienda-prueba-ps/api/orders/' . $resource_id;
+        $url = 'http://'.$this->url.'api/orders/' . $resource_id;
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $url,
@@ -99,7 +99,7 @@ class ChazkiCollector
     public function getOrderDet($resource_id, $chazkiAccess)
     {
         $curl = curl_init();
-        $url = 'http://localhost/tienda-prueba-ps/api/order_details/' . $resource_id . '?output_format=JSON';
+        $url = 'http://'.$this->url.'api/order_details/' . $resource_id . '?output_format=JSON';
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $url,
@@ -117,7 +117,7 @@ class ChazkiCollector
 
         $curl = curl_init();
         $resource_id = $resource['orderID'];
-        $url = 'http://localhost/tienda-prueba-ps/api/orders/' . $resource_id;
+        $url = 'http://'.$this->url.'api/orders/' . $resource_id;
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $url,
@@ -130,7 +130,7 @@ class ChazkiCollector
         $updatedfields->current_state = $resource['orderStatus'];
 
         $curl = curl_init();
-        $url = 'http://localhost/tienda-prueba-ps/api/orders/' . $resource_id;
+        $url = 'http://'.$this->url.'api/orders/' . $resource_id;
         curl_setopt_array(
             $curl,
             array(
