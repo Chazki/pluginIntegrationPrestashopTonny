@@ -37,7 +37,7 @@ class ChazkiWebhooks
 
     public function saveConfig($api_key)
     {
-        $json = json_decode(file_get_contents(dirname(dirname(__FILE__)).'/templates/saveconfig.json'), true);
+        $json = json_decode(Tools::file_get_contents(dirname(dirname(__FILE__)).'/templates/saveconfig.json'), true);
         $json['enterpriseKey'] = $api_key;
         $json['urlWebHook'] = 'http://example.com';
 
@@ -53,12 +53,12 @@ class ChazkiWebhooks
             CURLOPT_POSTFIELDS => $jsonConfig
         ));
 
-        $response = curl_exec($curl);
+        curl_exec($curl);
     }
 
     public function updateBody($api_key)
     {
-        $json = json_decode(file_get_contents(dirname(dirname(__FILE__)).'/templates/bodywebhook.json'), true);
+        $json = json_decode(Tools::file_get_contents(dirname(dirname(__FILE__)).'/templates/bodywebhook.json'), true);
         $json['enterpriseKey'] = $api_key;
 
         $jsonConfig = json_encode($json);
@@ -73,6 +73,6 @@ class ChazkiWebhooks
             CURLOPT_POSTFIELDS => $jsonConfig
         ));
 
-        $response = curl_exec($curl);
+        curl_exec($curl);
     }
 }
