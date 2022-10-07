@@ -26,22 +26,15 @@
 
 if ($data = json_decode(Tools::file_get_contents('php://input'))) {
     require_once(dirname(__FILE__).'/ChazkiCollector.php');
-    // echo "<pre>";
-    // print_r(_PS_BASE_URL_ . __PS_BASE_URI__);
-    // echo "</pre>";
-
-    // die();
+    
     $updateResource = array(
         'orderStatus' => (int)$data->order_status,
         'orderID' => (string)$data->order_id
     );
-    ChazkiCollector::updateOrderStatus(
-        $updateResource,
-        Configuration::get(
-            Tools::strtoupper(
-                _DB_PREFIX_.ChazkiInstallCarrier::CHAZKI_WEB_SERVICE_API_KEY
-            )
-        )
+
+    $chazkiCollector = new ChazkiCollector($this);
+    $chazkiCollector->updateOrderStatus(
+        $updateResource
     );
 } else {
     $data = "no entro al if";

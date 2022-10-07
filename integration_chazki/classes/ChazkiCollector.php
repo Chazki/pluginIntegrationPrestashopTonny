@@ -30,101 +30,75 @@ class ChazkiCollector
     {
         $this->module = $module;
         $this->url = Configuration::get('CHAZKI_SHOP_URL');
+        $this->shopKey = ChazkiHelper::get(
+            Tools::strtoupper(
+                _DB_PREFIX_.ChazkiInstallCarrier::CHAZKI_WEB_SERVICE_API_KEY
+            )
+        );
     }
 
-    public function getAddress($urlShop, $resource_id, $chazkiAccess)
+    protected function sendApiShop($url)
     {
-        ChazkiHelper::consoleLog('ENtra 2.2');
-        $url = 'http://'.$urlShop.'api/addresses/' . $resource_id . '?output_format=JSON';
-        ChazkiHelper::consoleLog($url);
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $url,
             CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
-            CURLOPT_USERPWD => $chazkiAccess . ":''",
+            CURLOPT_USERPWD => $this->shopKey . ":''",
         ));
 
-        $response = curl_exec($curl);
-        ChazkiHelper::consoleLog($response);
+        return curl_exec($curl);
+    }
+
+    public function getAddress($resource_id)
+    {
+        $url = 'http://'.$this->url.'api/addresses/' . $resource_id . '?output_format=JSON';
+        $response = $this->sendApiShop($url);
 
         return $response;
     }
 
-    public function getCustomers($resource_id, $chazkiAccess)
+    public function getCustomers($resource_id)
     {
-        $curl = curl_init();
         $url = 'http://'.$this->url.'api/customers/' . $resource_id . '?output_format=JSON';
-        curl_setopt_array($curl, array(
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL => $url,
-            CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
-            CURLOPT_USERPWD => $chazkiAccess . ":''",
-        ));
-
-        $response = curl_exec($curl);
+        $response = $this->sendApiShop($url);
 
         return $response;
     }
 
-    public function getOrder($resource_id, $chazkiAccess)
+    public function getOrder($resource_id)
     {
-        $curl = curl_init();
         $url = 'http://'.$this->url.'api/orders/' . $resource_id . '?output_format=JSON';
-        curl_setopt_array($curl, array(
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL => $url,
-            CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
-            CURLOPT_USERPWD => $chazkiAccess . ":''",
-        ));
-
-        $response = curl_exec($curl);
+        $response = $this->sendApiShop($url);
 
         return $response;
     }
 
-    public function getOrderXML($resource_id, $chazkiAccess)
+    public function getOrderXML($resource_id)
     {
-        $curl = curl_init();
         $url = 'http://'.$this->url.'api/orders/' . $resource_id;
-        curl_setopt_array($curl, array(
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL => $url,
-            CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
-            CURLOPT_USERPWD => $chazkiAccess . ":''",
-        ));
-
-        $response = curl_exec($curl);
+        $response = $this->sendApiShop($url);
 
         return $response;
     }
 
-    public function getOrderDet($resource_id, $chazkiAccess)
+    public function getOrderDet($resource_id)
     {
-        $curl = curl_init();
         $url = 'http://'.$this->url.'api/order_details/' . $resource_id . '?output_format=JSON';
-        curl_setopt_array($curl, array(
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL => $url,
-            CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
-            CURLOPT_USERPWD => $chazkiAccess . ":''",
-        ));
-
-        $response = curl_exec($curl);
+        $response = $this->sendApiShop($url);
 
         return $response;
     }
 
-    public function updateOrderStatus($resource, $chazkiAccess)
+    public function updateOrderStatus($resource)
     {
-
         $curl = curl_init();
         $resource_id = $resource['orderID'];
         $url = 'http://'.$this->url.'api/orders/' . $resource_id;
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $url,
-            CURLOPT_USERPWD => $chazkiAccess . ":''",
+            CURLOPT_USERPWD => $this->shopKey . ":''",
         ));
 
         $orderData = simplexml_load_string(curl_exec($curl), 'SimpleXMLElement', LIBXML_NOCDATA);
@@ -146,5 +120,31 @@ class ChazkiCollector
         );
 
         curl_exec($curl);
+    }
+
+    public function getData($address_id, $customer_id, $order_id)
+    {
+        $address_decoded = json_decode(
+            $this->getAddress(strval($address_id))
+        );
+
+        $customer_decoded = json_decode(
+            $this->getCustomers(strval($customer_id))
+        );
+
+        $order_decoded = json_decode(
+            $this->getOrder(strval($order_id))
+        );
+
+        $order_details_decoded = json_decode(
+            $this->getOrderDet($order_decoded->order->associations->order_rows[0]->id)
+        );
+
+        return array(
+            'customer' => $customer_decoded->customer,
+            'address' => $address_decoded->address,
+            'order' => $order_decoded->order,
+            'order_details' => $order_details_decoded->order_detail
+        );
     }
 }

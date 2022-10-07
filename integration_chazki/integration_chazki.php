@@ -212,53 +212,24 @@ class Integration_chazki extends CarrierModule
     {
         if( Configuration::get('PS_CHAZKI_STATUS') == 'NEW')
         {
-            ChazkiHelper::consoleLog('LLEGA 2');
-            $chazkiKey = ChazkiHelper::get(
-                Tools::strtoupper(
-                    _DB_PREFIX_.ChazkiInstallCarrier::CHAZKI_WEB_SERVICE_API_KEY
-                )
-            );
-            $urlShop = ChazkiHelper::get(
-                Tools::strtoupper(
-                    'CHAZKI_SHOP_URL'
-                )
-            );
             $orderObj = $params['order'];
-            $orderStatusObj = $params['orderStatus'];
-            ChazkiHelper::consoleLog('LLEGA 2.1');
-            
-            $address_id = $orderObj->id_address_delivery;
-            $addressJSON = ChazkiCollector::getAddress($urlShop, strval($address_id), $chazkiKey);
-            $address_decoded = json_decode($addressJSON);
-            $customer_id = $orderObj->id_customer;
-            ChazkiHelper::consoleLog($address_decoded);
-            $customerJSON = ChazkiCollector::getCustomers(strval($customer_id), $chazkiKey);
-            $customer_decoded = json_decode($customerJSON);
-            $order_id = $orderObj->id;
-            ChazkiHelper::consoleLog($customer_decoded);
-            $orderJSON = ChazkiCollector::getOrder(strval($order_id), $chazkiKey);
-            $order_decoded = json_decode($orderJSON);
-            ChazkiHelper::consoleLog($order_decoded);
-            $orderDetailsJSON = ChazkiCollector::getOrderDet($order_decoded->order->associations->order_rows[0]->id, $chazkiKey);
-            $order_details_decoded = json_decode($orderDetailsJSON);
-            ChazkiHelper::consoleLog($order_details_decoded);
+            $chazkiCollector = new ChazkiCollector($this);
 
-            $chazkiOrder = array(
-                'customer' => $customer_decoded->customer,
-                'address' => $address_decoded->address,
-                'order' => $order_decoded->order,
-                'order_details' => $order_details_decoded->order_detail
+            $chazkiOrder = $chazkiCollector->getData(
+                $orderObj->id_address_delivery,
+                $orderObj->id_customer,
+                $orderObj->id
             );
 
             $new_order = new ChazkiOrders($this);
-            ChazkiHelper::consoleLog('LLEGA 3');
 
             if($new_order->validateOrder()) {
                 $chazkiOrderReturn = $new_order->buildOrder($chazkiOrder);
-                $new_order->generateOrder($chazkiOrderReturn);
                 ChazkiHelper::consoleLog($chazkiOrderReturn);
+                $new_order->generateOrder($chazkiOrderReturn);
             }
         }     
+        return true;
     }
 
     public function hookActionCarrierUpdate($params)

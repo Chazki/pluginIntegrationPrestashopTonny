@@ -26,12 +26,12 @@
 
 class ChazkiOrders
 {
+    const CHAZKI_API_ORDERS = '/uploadClientOrders';
+
     public function __construct($module)
     {
         $this->module = $module;
     }
-
-    const CHAZKI_API_ORDERS = '/uploadClientOrders';
     
     public function validateOrder()
     {
@@ -95,6 +95,10 @@ class ChazkiOrders
         $bodyJSON = $order;
         
         $api_chazki = new ChazkiApi($this->module);
-        $api_chazki->sendPost(self::CHAZKI_API_ORDERS, $bodyJSON);
+        $api_chazki->sendPost(
+            self::CHAZKI_API_ORDERS,
+            $bodyJSON,
+            array('enterprise-key: value')
+        );
     }
 }
