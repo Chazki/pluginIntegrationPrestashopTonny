@@ -50,11 +50,6 @@ class ChazkiUninstall
         Configuration::deleteByName('INTEGATION_CHAZKI_LIVE_MODE');
         Configuration::deleteByName(
             Tools::strtoupper(
-                ChazkiInstallPanel::CHAZKI_WEB_SERVICE_API_KEY
-            )
-        );
-        Configuration::deleteByName(
-            Tools::strtoupper(
                 _DB_PREFIX_ . ChazkiInstallPanel::MODULE_API_KEY_NAME
             )
         );
