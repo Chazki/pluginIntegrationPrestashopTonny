@@ -32,10 +32,12 @@ class ChazkiCollector
         $this->url = Configuration::get('CHAZKI_SHOP_URL');
     }
 
-    public function getAddress($resource_id, $chazkiAccess)
+    public function getAddress($urlShop, $resource_id, $chazkiAccess)
     {
+        ChazkiHelper::consoleLog('ENtra 2.2');
+        $url = 'http://'.$urlShop.'api/addresses/' . $resource_id . '?output_format=JSON';
+        ChazkiHelper::consoleLog($url);
         $curl = curl_init();
-        $url = 'http://'.$this->url.'api/addresses/' . $resource_id . '?output_format=JSON';
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $url,
@@ -44,6 +46,7 @@ class ChazkiCollector
         ));
 
         $response = curl_exec($curl);
+        ChazkiHelper::consoleLog($response);
 
         return $response;
     }

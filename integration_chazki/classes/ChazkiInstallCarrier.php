@@ -32,8 +32,8 @@ class ChazkiInstallCarrier
 
     const CHAZKI_TRACKING_URL_CARRIER = '/trackcodeTracking/@';
     const CARRIER_ID_SERVICE_CODE = 'CARRIER_ID_SERVICE_CODE';
-    public static $chazkiKey = '';
-
+    const CHAZKI_MODULE_KEY = 'CHAZKI_MODULE_KEY';
+    const CHAZKI_WEB_SERVICE_API_KEY = 'CHAZKI_WEB_SERVICE_API_KEY';
     
     public function __construct($module)
     {
@@ -47,10 +47,14 @@ class ChazkiInstallCarrier
         $key = '';
         
         for ($i=0; $i < 32; $i++) {
-            $key = $key . $characters[rand(0, Tools::strlen($characters))];
+            $key = $key . $characters[rand(0, Tools::strlen($characters)-1)];
         }
 
-        self::$chazkiKey = $key;
+        ChazkiHelper::updateValue(
+            Tools::strtoupper(_DB_PREFIX_.self::CHAZKI_WEB_SERVICE_API_KEY),
+            $key
+        );
+
         return $key;
     }
 

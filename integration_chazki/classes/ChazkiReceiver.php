@@ -35,7 +35,14 @@ if ($data = json_decode(Tools::file_get_contents('php://input'))) {
         'orderStatus' => (int)$data->order_status,
         'orderID' => (string)$data->order_id
     );
-    ChazkiCollector::updateOrderStatus($updateResource, Configuration::get(_DB_PREFIX_.'CHAZKI_WEB_SERVICE_API_KEY'));
+    ChazkiCollector::updateOrderStatus(
+        $updateResource,
+        Configuration::get(
+            Tools::strtoupper(
+                _DB_PREFIX_.ChazkiInstallCarrier::CHAZKI_WEB_SERVICE_API_KEY
+            )
+        )
+    );
 } else {
     $data = "no entro al if";
 }
