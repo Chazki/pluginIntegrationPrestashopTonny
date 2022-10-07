@@ -26,14 +26,11 @@
 
 class ChazkiInstallCarrier
 {
-    const BETA_ENV = 'https://nintendo-beta';
-    const PROD_ENV = 'https://nintendo';
-    
     public static $chazki_services = array(
         'CHAZKI_SERVICE_CARRIER' => 'Chazki',
     );
 
-    const CHAZKI_TRACKING_URL_CARRIER = BETA_ENV.'.chazki.com/trackcodeTracking/@';
+    const CHAZKI_TRACKING_URL_CARRIER = '/trackcodeTracking/@';
     const CARRIER_ID_SERVICE_CODE = 'CARRIER_ID_SERVICE_CODE';
     public static $chazkiKey = '';
 
@@ -41,6 +38,7 @@ class ChazkiInstallCarrier
     public function __construct($module)
     {
         $this->module = $module;
+        $this->chazkiApi = new ChazkiApi($module);
     }
 
     public function generateKey()
@@ -155,7 +153,7 @@ class ChazkiInstallCarrier
         $carrier = new Carrier();
         $carrier->name = $name;
         $carrier->delay = array();
-        $carrier->url = self::CHAZKI_TRACKING_URL_CARRIER;
+        $carrier->url = $this->chazkiApi->getUrlNintendo(self::CHAZKI_TRACKING_URL_CARRIER);
         $carrier->external_module_name = ChazkiHelper::NAMEL;
         $carrier->active = true;
         $carrier->shipping_external = true;

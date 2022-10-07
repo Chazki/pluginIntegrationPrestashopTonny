@@ -211,8 +211,10 @@ class Integration_chazki extends CarrierModule
 
     public function hookActionValidateOrder($params)
     {
+        ChazkiHelper::consoleLog('LLEGA 1');
         if( Configuration::get('PS_CHAZKI_STATUS') == 'NEW')
         {
+            ChazkiHelper::consoleLog('LLEGA 2');
             $orderObj = $params['order'];
             $orderStatusObj = $params['orderStatus'];
             
@@ -236,10 +238,12 @@ class Integration_chazki extends CarrierModule
             );
 
             $new_order = new ChazkiOrders($this);
+            ChazkiHelper::consoleLog('LLEGA 3');
 
             if($new_order->validateOrder()) {
-                $chazkiorderreturn = $new_order->buildOrder($chazkiOrder);
-                $new_order->generateOrder($chazkiorderreturn);
+                $chazkiOrderReturn = $new_order->buildOrder($chazkiOrder);
+                $new_order->generateOrder($chazkiOrderReturn);
+                ChazkiHelper::consoleLog($chazkiOrderReturn);
             }
         }     
     }

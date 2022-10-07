@@ -26,8 +26,8 @@
 
 class ChazkiApi
 {
-    const BETA_ENV = 'https://us-central1-chazki-link-beta';
-    const PROD_ENV = 'https://us-central1-chazki-link';
+    const BETA_ENV = 'https://us-central1-chazki-link-beta.cloudfunctions.net';
+    const PROD_ENV = 'https://us-central1-chazki-link.cloudfunctions.net';
     
     public function __construct($module)
     {
@@ -50,7 +50,7 @@ class ChazkiApi
             $headers = array('Content-Type:application/json');
         }
 
-        $url = BETA_ENV.$postURL;
+        $url = self::BETA_ENV . $postUrl;
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -73,5 +73,10 @@ class ChazkiApi
         }
 
         return $response;
+    }
+
+    public function getUrlNintendo($url)
+    {
+        return self::BETA_ENV . $url;
     }
 }

@@ -26,8 +26,7 @@
 
 class ChazkiShippingCost
 {
-    const CHAZKI_API_SHIPPING = '.cloudfunctions.net'.
-        '/cfuntions-integration-prestashop/api/prestashop/quote';
+    const CHAZKI_API_SHIPPING = '/cfuntions-integration-prestashop/api/prestashop/quote';
     
     public function __construct($module)
     {
@@ -95,6 +94,7 @@ class ChazkiShippingCost
         $bodyJSON = json_encode($bodyObj);
 
         $api_chazki = new ChazkiApi($this->module);
+
         $responseJson = $api_chazki->sendPost(
             self::CHAZKI_API_SHIPPING,
             $bodyJSON,
