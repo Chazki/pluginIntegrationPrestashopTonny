@@ -122,18 +122,18 @@ class ChazkiCollector
         curl_exec($curl);
     }
 
-    public function getData($address_id, $customer_id, $order_id)
+    public function getData($order_id)
     {
+        $order_decoded = json_decode(
+            $this->getOrder(strval($order_id))
+        );
+
         $address_decoded = json_decode(
-            $this->getAddress(strval($address_id))
+            $this->getAddress(strval($order_decoded->order->id_address_delivery))
         );
 
         $customer_decoded = json_decode(
-            $this->getCustomers(strval($customer_id))
-        );
-
-        $order_decoded = json_decode(
-            $this->getOrder(strval($order_id))
+            $this->getCustomers(strval($order_decoded->order->id_customer))
         );
 
         $order_details_decoded = json_decode(

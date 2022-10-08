@@ -92,13 +92,26 @@ class ChazkiOrders
 
     public function generateOrder($order)
     {
-        $bodyJSON = $order;
+        $bodyJSON = json_decode($order);
         
-        $api_chazki = new ChazkiApi($this->module);
-        $api_chazki->sendPost(
-            self::CHAZKI_API_ORDERS,
-            $bodyJSON,
-            array('enterprise-key: value')
+        $response = json_decode(
+            $api_chazki->sendPost(
+                self::CHAZKI_API_ORDERS,
+                $order,
+                array()
+            )
         );
+
+        if ((int)$response->ordersWithoutErrors > 0) {
+            $sql = 'UPDATE `' . _DB_PREFIX_ . 'orders` SET `shipping_number` = "' .
+                $bodyJSON->orders->trackCode . '" WHERE `id_order` = ' . (int) $bodyJSON->orders->providerID;
+
+            Db::getInstance()->Execute($sql);
+
+            $sql = 'UPDATE `' . _DB_PREFIX_ . 'order_carrier` SET `tracking_number` = "' .
+                $bodyJSON->orders->trackCode . '" WHERE `id_order` = ' . (int) $bodyJSON->orders->providerID;
+            
+            Db::getInstance()->Execute($sql);
+        }
     }
 }

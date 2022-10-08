@@ -181,29 +181,17 @@ class Integration_chazki extends CarrierModule
         if( Configuration::get('PS_CHAZKI_STATUS') == 'PAYMENT')
         {
             $order_id = $params['id_order'];
-            $orderJSON = ChazkiCollector::getOrder(strval($order_id), $this->chazki_carrier::$chazkiKey);
-            $order_decoded = json_decode($orderJSON);
-            $customer_id = $order_decoded->id_customer;
-            $customerJSON = ChazkiCollector::getCustomers(strval($customer_id), $this->chazki_carrier::$chazkiKey);
-            $customer_decoded = json_decode($customerJSON);
-            $address_id = $order_decoded->id_address_delivery;
-            $addressJSON = ChazkiCollector::getAddress(strval($address_id), $this->chazki_carrier::$chazkiKey);
-            $address_decoded = json_decode($addressJSON);
-            $orderDetailsJSON = ChazkiCollector::getOrderDet($order_decoded->order->associations->order_rows[0]->id, $this->chazki_carrier::$chazkiKey);
-            $order_details_decoded = json_decode($orderDetailsJSON);
+            $chazkiCollector = new ChazkiCollector($this);
 
-            $chazkiOrder = array(
-                'customer' => $customer_decoded->customer,
-                'address' => $address_decoded->address,
-                'order' => $order_decoded->order,
-                'order_details' => $order_details_decoded->order_detail
+            $chazkiOrder = $chazkiCollector->getData(
+                $order_id
             );
 
             $new_order = new ChazkiOrders($this);
 
             if($new_order->validateOrder()) {
-                $chazkiorderreturn = $new_order->buildOrder($chazkiOrder);
-                $new_order->generateOrder($chazkiorderreturn);
+                $chazkiOrderReturn = $new_order->buildOrder($chazkiOrder);
+                $new_order->generateOrder($chazkiOrderReturn);
             }
         }
     }
@@ -216,8 +204,6 @@ class Integration_chazki extends CarrierModule
             $chazkiCollector = new ChazkiCollector($this);
 
             $chazkiOrder = $chazkiCollector->getData(
-                $orderObj->id_address_delivery,
-                $orderObj->id_customer,
                 $orderObj->id
             );
 
@@ -225,11 +211,9 @@ class Integration_chazki extends CarrierModule
 
             if($new_order->validateOrder()) {
                 $chazkiOrderReturn = $new_order->buildOrder($chazkiOrder);
-                ChazkiHelper::consoleLog($chazkiOrderReturn);
                 $new_order->generateOrder($chazkiOrderReturn);
             }
-        }     
-        return true;
+        }
     }
 
     public function hookActionCarrierUpdate($params)

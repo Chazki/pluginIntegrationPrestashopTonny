@@ -52,9 +52,6 @@ class ChazkiApi
         }
 
         $url = self::BETA_ENV . $postUrl;
-        ChazkiHelper::consoleLog($url);
-        ChazkiHelper::consoleLog($params);
-        ChazkiHelper::consoleLog($headers);
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
