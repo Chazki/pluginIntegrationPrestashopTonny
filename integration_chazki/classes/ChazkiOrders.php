@@ -31,7 +31,7 @@ class ChazkiOrders
     public function __construct($module)
     {
         $this->module = $module;
-        $this->$chazki = new ChazkiApi($module);
+        $this->chazki = new ChazkiApi($module);
     }
     
     public function validateOrder()
@@ -94,7 +94,7 @@ class ChazkiOrders
     public function generateOrder($order)
     {
         $response = json_decode(
-            $this->$chazki->sendPost(
+            $this->chazki->sendPost(
                 self::CHAZKI_API_ORDERS,
                 $order,
                 array()

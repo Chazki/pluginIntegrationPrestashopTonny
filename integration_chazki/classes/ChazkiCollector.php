@@ -113,7 +113,7 @@ class ChazkiCollector
             array(
                 CURLOPT_RETURNTRANSFER => 1,
                 CURLOPT_URL => $url,
-                CURLOPT_USERPWD => $chazkiAccess . ":''",
+                CURLOPT_USERPWD => $this->shopKey . ":''",
                 CURLOPT_CUSTOMREQUEST => "PUT",
                 CURLOPT_POSTFIELDS => $orderData->asXML()
             )
@@ -125,15 +125,15 @@ class ChazkiCollector
     public function getData($order_id)
     {
         $order_decoded = json_decode(
-            $this->getOrder(strval($order_id))
+            $this->getOrder(''.$order_id)
         );
 
         $address_decoded = json_decode(
-            $this->getAddress(strval($order_decoded->order->id_address_delivery))
+            $this->getAddress(''.$order_decoded->order->id_address_delivery)
         );
 
         $customer_decoded = json_decode(
-            $this->getCustomers(strval($order_decoded->order->id_customer))
+            $this->getCustomers(''.$order_decoded->order->id_customer)
         );
 
         $order_details_decoded = json_decode(

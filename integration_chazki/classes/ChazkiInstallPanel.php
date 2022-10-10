@@ -50,6 +50,7 @@ class ChazkiInstallPanel
     {
         $this->module = $module;
         $this->context = Context::getContext();
+        $this->webhook = new ChazkiWebhooks($module);
     }
 
     public function getContent()
@@ -63,8 +64,8 @@ class ChazkiInstallPanel
                 if ($api_key) {
                     ChazkiHelper::updateValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_API_KEY_NAME), $api_key);
                     ChazkiHelper::updateValue(Tools::strtoupper(_DB_PREFIX_.self::MODULE_SERVICE_NAME), $service_id);
-                    ChazkiWebhooks::saveConfig($api_key);
-                    ChazkiWebhooks::updateBody($api_key);
+                    $this->webhook->saveConfig($api_key);
+                    $this->webhook->updateBody($api_key);
                 } else {
                     ChazkiHelper::setNotification(
                         $this->module->l('The entered API key is not accepted Spring GDS, contact your manager'),

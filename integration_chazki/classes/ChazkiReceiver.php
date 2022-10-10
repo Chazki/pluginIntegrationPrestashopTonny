@@ -24,15 +24,19 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-if ($data = json_decode(Tools::file_get_contents('php://input'))) {
+use Tools;
+use Configuration;
+
+if ($data = json_decode(file_get_contents('php://input'))) {
     require_once(dirname(__FILE__).'/ChazkiCollector.php');
+    require_once(dirname(__FILE__).'/ChazkiApi.php');
     
     $updateResource = array(
         'orderStatus' => (int)$data->order_status,
         'orderID' => (string)$data->order_id
     );
 
-    $chazkiCollector = new ChazkiCollector($this);
+    $chazkiCollector = new ChazkiCollector('this');
     $chazkiCollector->updateOrderStatus(
         $updateResource
     );

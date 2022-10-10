@@ -27,33 +27,29 @@
 class ChazkiWebhooks
 {
 
-    const CHAZKI_SAVE_CONFIG_WEBHOOK = 'http://localhost:5001/chazki-link-beta/us-central1/saveConfigWebhook';
-    const CHAZKI_UPDATE_BODY_WEBHOOK = 'http://localhost:5001/chazki-link-beta/us-central1/updateBodyWebhook';
+    const CHAZKI_SAVE_CONFIG_WEBHOOK = '/saveConfigWebhook';
+    const CHAZKI_UPDATE_BODY_WEBHOOK = '/updateBodyWebhook';
 
     public function __construct($module)
     {
         $this->module = $module;
+        $this->chazki = new ChazkiApi($module);
     }
 
     public function saveConfig($api_key)
     {
         $json = json_decode(Tools::file_get_contents(dirname(dirname(__FILE__)).'/templates/saveconfig.json'), true);
         $json['enterpriseKey'] = $api_key;
-        $json['urlWebHook'] = 'http://example.com';
+        $json['urlWebHook'] = Configuration::get('CHAZKI_SHOP_URL').
+            'modules/integration_chazki/classes/ChazkiReceiver.php';
 
         $jsonConfig = json_encode($json);
         
-        $curl = curl_init();
-        $url = self::CHAZKI_SAVE_CONFIG_WEBHOOK;
-        curl_setopt_array($curl, array(
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL => $url,
-            CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => $jsonConfig
-        ));
-
-        curl_exec($curl);
+        $this->chazki->sendPost(
+            self::CHAZKI_SAVE_CONFIG_WEBHOOK,
+            $jsonConfig,
+            array()
+        );
     }
 
     public function updateBody($api_key)
@@ -63,16 +59,10 @@ class ChazkiWebhooks
 
         $jsonConfig = json_encode($json);
         
-        $curl = curl_init();
-        $url = self::CHAZKI_UPDATE_BODY_WEBHOOK;
-        curl_setopt_array($curl, array(
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL => $url,
-            CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => $jsonConfig
-        ));
-
-        curl_exec($curl);
+        $this->chazki->sendPost(
+            self::CHAZKI_SAVE_CONFIG_WEBHOOK,
+            $jsonConfig,
+            array()
+        );
     }
 }
