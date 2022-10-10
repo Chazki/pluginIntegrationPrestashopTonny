@@ -52,7 +52,7 @@ class ChazkiCollector
 
     public function getAddress($resource_id)
     {
-        $url = 'http://'.$this->url.'api/addresses/' . $resource_id . '?output_format=JSON';
+        $url = $this->url.'api/addresses/' . $resource_id . '?output_format=JSON';
         $response = $this->sendApiShop($url);
 
         return $response;
@@ -60,7 +60,7 @@ class ChazkiCollector
 
     public function getCustomers($resource_id)
     {
-        $url = 'http://'.$this->url.'api/customers/' . $resource_id . '?output_format=JSON';
+        $url = $this->url.'api/customers/' . $resource_id . '?output_format=JSON';
         $response = $this->sendApiShop($url);
 
         return $response;
@@ -68,7 +68,7 @@ class ChazkiCollector
 
     public function getOrder($resource_id)
     {
-        $url = 'http://'.$this->url.'api/orders/' . $resource_id . '?output_format=JSON';
+        $url = $this->url.'api/orders/' . $resource_id . '?output_format=JSON';
         $response = $this->sendApiShop($url);
 
         return $response;
@@ -76,7 +76,7 @@ class ChazkiCollector
 
     public function getOrderXML($resource_id)
     {
-        $url = 'http://'.$this->url.'api/orders/' . $resource_id;
+        $url = $this->url.'api/orders/' . $resource_id;
         $response = $this->sendApiShop($url);
 
         return $response;
@@ -84,7 +84,7 @@ class ChazkiCollector
 
     public function getOrderDet($resource_id)
     {
-        $url = 'http://'.$this->url.'api/order_details/' . $resource_id . '?output_format=JSON';
+        $url = $this->url.'api/order_details/' . $resource_id . '?output_format=JSON';
         $response = $this->sendApiShop($url);
 
         return $response;

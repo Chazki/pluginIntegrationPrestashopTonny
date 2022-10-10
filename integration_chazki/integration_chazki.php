@@ -109,7 +109,7 @@ class Integration_chazki extends CarrierModule
             $uri = \Db::getInstance()->getValue(
                 'SELECT `physical_uri` FROM `' . _DB_PREFIX_ . 'shop_url` WHERE main = 1'
             );
-            $url = $domain.''.$uri;
+            $url = 'https://'.$domain.''.$uri;
         }
         else
         {
@@ -119,7 +119,7 @@ class Integration_chazki extends CarrierModule
             $uri = \Db::getInstance()->getValue(
                 'SELECT `physical_uri` FROM `' . _DB_PREFIX_ . 'shop_url` WHERE main = 1'
             );
-            $url = $domain.''.$uri;
+            $url = 'http://'.$domain.''.$uri;
         }
 
         return $url;
