@@ -73,5 +73,18 @@ class ChazkiUninstall
                 _DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER'
             )
         );
+        Configuration::deleteByName(
+            Tools::strtoupper('CHAZKI_SHOP_URL')
+        );
+        Configuration::deleteByName(
+            Tools::strtoupper(
+                _DB_PREFIX_.ChazkiInstallCarrier::CHAZKI_WEB_SERVICE_API_KEY
+            )
+        );
+        Configuration::deleteByName(
+            Tools::strtoupper(
+                _DB_PREFIX_.ChazkiInstallPanel::MODULE_STATUS_NAME
+            )
+        );
     }
 }
