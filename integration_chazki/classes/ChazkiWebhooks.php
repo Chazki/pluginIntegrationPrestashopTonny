@@ -38,13 +38,12 @@ class ChazkiWebhooks
 
     public function saveConfig($api_key)
     {
-        $json = json_decode(Tools::file_get_contents(dirname(dirname(__FILE__)).'/templates/saveconfig.json'), true);
+        $json = json_decode(file_get_contents(dirname(dirname(__FILE__)).'/templates/saveconfig.json'), true);
         $json['enterpriseKey'] = $api_key;
         $json['urlWebHook'] = Configuration::get('CHAZKI_SHOP_URL').
             'modules/integration_chazki/classes/ChazkiReceiver.php';
-
+        $json['hookHeaders']['x-api-key'] = Configuration::get(Tools::strtoupper(_DB_PREFIX_.'CHAZKI_WEB_SERVICE_API_KEY'));        
         $jsonConfig = json_encode($json);
-        
         $this->chazki->sendPost(
             self::CHAZKI_SAVE_CONFIG_WEBHOOK,
             $jsonConfig,
@@ -54,13 +53,13 @@ class ChazkiWebhooks
 
     public function updateBody($api_key)
     {
-        $json = json_decode(Tools::file_get_contents(dirname(dirname(__FILE__)).'/templates/bodywebhook.json'), true);
+        $json = json_decode(file_get_contents(dirname(dirname(__FILE__)).'/templates/bodywebhook.json'), true);
         $json['enterpriseKey'] = $api_key;
 
         $jsonConfig = json_encode($json);
         
         $this->chazki->sendPost(
-            self::CHAZKI_SAVE_CONFIG_WEBHOOK,
+            self::CHAZKI_UPDATE_BODY_WEBHOOK,
             $jsonConfig,
             array()
         );

@@ -1,6 +1,9 @@
 {
     "enterpriseKey": "",
     "urlWebHook": "",
+    "hookHeaders": {
+        "x-api-key": ""
+    },
     "hookCustomStatus": {
         "GOTO_PICK": "3",
         "GOTO_DELIVER": "4",
