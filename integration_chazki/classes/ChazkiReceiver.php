@@ -24,21 +24,25 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-use Tools;
-use Configuration;
-
 if ($data = json_decode(file_get_contents('php://input'))) {
     require_once(dirname(__FILE__).'/ChazkiCollector.php');
-    require_once(dirname(__FILE__).'/ChazkiApi.php');
     
     $updateResource = array(
         'orderStatus' => (int)$data->order_status,
         'orderID' => (string)$data->order_id
     );
 
-    $chazkiCollector = new ChazkiCollector('this');
-    $chazkiCollector->updateOrderStatus(
-        $updateResource
+    $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://"; 
+    $url = str_replace(
+        "modules/integration_chazki/classes/ChazkiReceiver.php",
+        "",
+        $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']
+    );
+
+    ChazkiCollector::updateOrderStatus(
+        $updateResource,
+        $url,
+        'mSEFLHNyAAgyTa4U72c4jpG1Djyrx5Te'
     );
 } else {
     $data = "no entro al if";

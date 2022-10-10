@@ -90,15 +90,15 @@ class ChazkiCollector
         return $response;
     }
 
-    public function updateOrderStatus($resource)
+    public static function updateOrderStatus($resource, $urlApi, $keyApi)
     {
         $curl = curl_init();
         $resource_id = $resource['orderID'];
-        $url = 'http://'.$this->url.'api/orders/' . $resource_id;
+        $url = $urlApi.'api/orders/' . $resource_id;
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $url,
-            CURLOPT_USERPWD => $this->shopKey . ":''",
+            CURLOPT_USERPWD => $keyApi . ":''",
         ));
 
         $orderData = simplexml_load_string(curl_exec($curl), 'SimpleXMLElement', LIBXML_NOCDATA);
@@ -107,13 +107,13 @@ class ChazkiCollector
         $updatedfields->current_state = $resource['orderStatus'];
 
         $curl = curl_init();
-        $url = 'http://'.$this->url.'api/orders/' . $resource_id;
+        $url = $urlApi.'api/orders/' . $resource_id;
         curl_setopt_array(
             $curl,
             array(
                 CURLOPT_RETURNTRANSFER => 1,
                 CURLOPT_URL => $url,
-                CURLOPT_USERPWD => $this->shopKey . ":''",
+                CURLOPT_USERPWD => $keyApi . ":''",
                 CURLOPT_CUSTOMREQUEST => "PUT",
                 CURLOPT_POSTFIELDS => $orderData->asXML()
             )
