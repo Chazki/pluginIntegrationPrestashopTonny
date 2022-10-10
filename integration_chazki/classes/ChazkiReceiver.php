@@ -39,10 +39,13 @@ if ($data = json_decode(file_get_contents('php://input'))) {
         $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']
     );
 
+    $headers = apache_request_headers();
+    $apiKey = $headers['x-api-key'];
+
     ChazkiCollector::updateOrderStatus(
         $updateResource,
         $url,
-        'mSEFLHNyAAgyTa4U72c4jpG1Djyrx5Te'
+        $apiKey
     );
 } else {
     $data = "no entro al if";
