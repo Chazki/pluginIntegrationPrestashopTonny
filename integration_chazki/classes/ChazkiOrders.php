@@ -31,6 +31,7 @@ class ChazkiOrders
     public function __construct($module)
     {
         $this->module = $module;
+        $this->$chazki = new ChazkiApi($module);
     }
     
     public function validateOrder()
@@ -92,15 +93,19 @@ class ChazkiOrders
 
     public function generateOrder($order)
     {
-        $bodyJSON = json_decode($order);
-        
         $response = json_decode(
-            $api_chazki->sendPost(
+            $this->$chazki->sendPost(
                 self::CHAZKI_API_ORDERS,
                 $order,
                 array()
             )
         );
+
+        if (!$response) {
+            return true;
+        }
+
+        $bodyJSON = json_decode($order);
 
         if ((int)$response->ordersWithoutErrors > 0) {
             $sql = 'UPDATE `' . _DB_PREFIX_ . 'orders` SET `shipping_number` = "' .
