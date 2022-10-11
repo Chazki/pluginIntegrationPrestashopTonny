@@ -66,16 +66,16 @@ class ChazkiShippingCost
         if (ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_BRANCH_ID_NAME))) {
             $this->pickup_address = 'Jr. Gonzales Prada 280, Miraflores, Lima';
         } else {
-            $this->pickup_address = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . 'SHOP_ADDR1'));
+            $this->pickup_address = ChazkiHelper::get(Tools::strtoupper('PS_SHOP_ADDR1'));
             
-            if (ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . 'SHOP_CITY'))) {
+            if (ChazkiHelper::get(Tools::strtoupper('PS_SHOP_CITY'))) {
                 $this->pickup_address = $this->pickup_address . ', '.
-                    ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . 'SHOP_CITY'));
+                    ChazkiHelper::get(Tools::strtoupper('PS_SHOP_CITY'));
             }
             
-            if (ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . 'SHOP_COUNTRY'))) {
+            if (ChazkiHelper::get(Tools::strtoupper('PS_SHOP_COUNTRY'))) {
                 $this->pickup_address = $this->pickup_address . ', '.
-                    ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . 'SHOP_COUNTRY'));
+                    ChazkiHelper::get(Tools::strtoupper('PS_SHOP_COUNTRY'));
             }
         }
     }
