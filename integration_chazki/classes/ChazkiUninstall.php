@@ -33,17 +33,32 @@ class ChazkiUninstall
 
     public function uninstall()
     {
-        $carrier_obj = new Carrier(
-            ChazkiHelper::get(
-                Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER_reference')
-            )
-        );
-        if ($carrier_obj) {
-            $carrier_obj->delete();
-            Db::getInstance()->execute(
-                'UPDATE `'._DB_PREFIX_.
-                'carrier` SET `deleted` = 1 WHERE `id_reference` = '.
-                $carrier_obj->id_reference
+        if (ChazkiHelper::get(
+            Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER_reference')
+        )) {
+            $carrier_obj = new Carrier(
+                ChazkiHelper::get(
+                    Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER_reference')
+                )
+            );
+            if ($carrier_obj) {
+                $carrier_obj->delete();
+                Db::getInstance()->execute(
+                    'UPDATE `'._DB_PREFIX_.
+                    'carrier` SET `deleted` = 1 WHERE `id_reference` = '.
+                    $carrier_obj->id_reference
+                );
+            }
+
+            Configuration::deleteByName(
+                Tools::strtoupper(
+                    _DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER_reference'
+                )
+            );
+            Configuration::deleteByName(
+                Tools::strtoupper(
+                    _DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER'
+                )
             );
         }
 
@@ -61,16 +76,6 @@ class ChazkiUninstall
         Configuration::deleteByName(
             Tools::strtoupper(
                 _DB_PREFIX_ . ChazkiInstallPanel::MODULE_SERVICE_NAME
-            )
-        );
-        Configuration::deleteByName(
-            Tools::strtoupper(
-                _DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER_reference'
-            )
-        );
-        Configuration::deleteByName(
-            Tools::strtoupper(
-                _DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER'
             )
         );
         Configuration::deleteByName(

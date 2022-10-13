@@ -134,11 +134,11 @@ class Integration_chazki extends CarrierModule
 
     public function getOrderShippingCost($params, $shipping_cost)
     {
-        if (Context::getContext()->customer->logged == true)
-        {
+        //if (Context::getContext()->customer->logged == true)
+        //{
             $chazki_ship = new ChazkiShippingCost($this);
-            return $chazki_ship->run($params, $shipping_cost);
-        }
+            $shipping_cost = $chazki_ship->run($params, $shipping_cost);
+        //}
 
         return $shipping_cost;
     }
@@ -178,7 +178,7 @@ class Integration_chazki extends CarrierModule
 
     public function hookActionPaymentConfirmation($params)
     {
-        if( Configuration::get('PS_CHAZKI_STATUS') == 'PAYMENT')
+        if( Configuration::get(Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_STATUS')) == 'PAYMENT')
         {
             $order_id = $params['id_order'];
             $chazkiCollector = new ChazkiCollector($this);
@@ -198,7 +198,7 @@ class Integration_chazki extends CarrierModule
 
     public function hookActionValidateOrder($params)
     {
-        if( Configuration::get('PS_CHAZKI_STATUS') == 'NEW')
+        if( Configuration::get(Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_STATUS')) == 'NEW')
         {
             $orderObj = $params['order'];
             $chazkiCollector = new ChazkiCollector($this);

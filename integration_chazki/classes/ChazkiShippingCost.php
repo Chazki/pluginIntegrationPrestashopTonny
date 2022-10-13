@@ -107,6 +107,9 @@ class ChazkiShippingCost
     public function run($cart, $shipping_fees)
     {
         $this->loadDropAddress($cart);
+        if (!$this->drop_address) {
+            return false;
+        }
         $this->loadPickupAddress();
         $quote = $this->getShippingCost();
 

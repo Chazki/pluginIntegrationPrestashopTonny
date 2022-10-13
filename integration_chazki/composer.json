@@ -1,13 +1,10 @@
 {
-    "name": "krash/prueba",
+    "name": "chazki/integrationchazki",
     "description":"controllers",
     "autoload": {
         "psr-4": {
             "Integration_chazki\\": "src/"
         }
-    },
-    "config": {
-        "prepend-autoloader": false
     },
     "type": "prestashop-module"
 }

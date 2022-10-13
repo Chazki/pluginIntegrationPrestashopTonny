@@ -104,7 +104,6 @@ class ChazkiOrders
         if (!$response) {
             return true;
         }
-
         $bodyJSON = json_decode($order);
 
         if ((int)$response->ordersWithoutErrors > 0) {
