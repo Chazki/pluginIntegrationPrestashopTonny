@@ -34,7 +34,7 @@ class ChazkiInstallPanel
     const IS_ORDER_SETTINGS_TAB = 'IS_CHAZKI_ORDER_SET';
     const MODULE_NAME = 'IntegrationChazkiModule';
 
-    public $name = 'integrationChazki';
+    public $name = 'integrationchazki';
 
     public static $services_types = array(
         array('id' => 'SAME_DAY', 'name' => 'Same Day'),

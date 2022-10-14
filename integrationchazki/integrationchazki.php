@@ -56,7 +56,7 @@ class IntegrationChazki extends CarrierModule
 
     public function __construct()
     {
-        $this->name = 'integrationChazki';
+        $this->name = 'integrationchazki';
         $this->tab = 'shipping_logistics';
         $this->version = '1.0.0';
         $this->author = 'Chazki';

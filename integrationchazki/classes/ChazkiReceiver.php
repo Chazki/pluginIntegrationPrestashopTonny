@@ -37,7 +37,7 @@ if ($data = json_decode(file_get_contents('php://input'))) {
     ) ? "https://"
     : "http://";
     $url = str_replace(
-        "modules/integrationChazki/classes/ChazkiReceiver.php",
+        "modules/integrationchazki/classes/ChazkiReceiver.php",
         "",
         $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']
     );

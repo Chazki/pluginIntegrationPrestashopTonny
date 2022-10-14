@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
-	<name>integrationChazki</name>
+	<name>integrationchazki</name>
 	<displayName><![CDATA[Integration Chazki]]></displayName>
 	<version><![CDATA[1.0.0]]></version>
 	<description><![CDATA[Integration of chazki for acount of service]]></description>

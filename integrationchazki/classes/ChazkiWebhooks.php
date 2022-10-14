@@ -41,7 +41,7 @@ class ChazkiWebhooks
         $json = json_decode(Tools::file_get_contents(dirname(dirname(__FILE__)).'/templates/saveconfig.json'), true);
         $json['enterpriseKey'] = $api_key;
         $json['urlWebHook'] = Configuration::get('CHAZKI_SHOP_URL').
-            'modules/integrationChazki/classes/ChazkiReceiver.php';
+            'modules/integrationchazki/classes/ChazkiReceiver.php';
         $json['hookHeaders']['x-api-key'] = Configuration::get(
             Tools::strtoupper(_DB_PREFIX_.'CHAZKI_WEB_SERVICE_API_KEY')
         );

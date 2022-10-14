@@ -30,7 +30,7 @@ if (!defined('_PS_VERSION_')) {
 
 class ChazkiHelper
 {
-    const NAMEL = "integrationChazki";
+    const NAMEL = "integrationchazki";
     const MSG_TYPE_ERROR = 'error';
     const MSG_TYPE_OK = 'ok';
 
