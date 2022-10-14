@@ -34,7 +34,7 @@ if ($data = json_decode(file_get_contents('php://input'))) {
 
     $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://"; 
     $url = str_replace(
-        "modules/integration_chazki/classes/ChazkiReceiver.php",
+        "modules/integrationChazki/classes/ChazkiReceiver.php",
         "",
         $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']
     );

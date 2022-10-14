@@ -1,0 +1,5 @@
+ps_integrationchazki_label_orders:
+  path: integrationChazki/admin_orders_label/chazki
+  methods: [GET]
+  defaults:
+    _controller: 'IntegrationChazki\Controller\Admin\OrderLabelController::demoAction'

@@ -3,8 +3,12 @@
     "description":"controllers",
     "autoload": {
         "psr-4": {
-            "Integration_chazki\\": "src/"
+            "IntegrationChazki\\": "src/"
         }
     },
+    "config": {
+        "prepend-autoloader": false
+    },
+    "license": "MIT", 
     "type": "prestashop-module"
 }

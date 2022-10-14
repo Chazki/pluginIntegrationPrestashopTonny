@@ -1,7 +1,7 @@
 let fs = require('fs');
 let archiver = require('archiver');
 let dir = './dist';
-let dirCompress = 'integration_chazki';
+let dirCompress = 'integrationChazki';
 
 if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);

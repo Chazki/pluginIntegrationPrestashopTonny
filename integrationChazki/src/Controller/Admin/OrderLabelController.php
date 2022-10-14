@@ -24,14 +24,15 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-namespace Integration_chazki\Controller\Admin;
+namespace IntegrationChazki\Controller\Admin;
 
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
+use PrestaShop\PrestaShop\Core\Domain\Customer\Exception\CustomerException;
 use Symfony\Component\HttpFoundation\Response;
 use Tools;
 use Db;
 
-class LabelController extends FrameworkBundleAdminController
+class OrderLabelController extends FrameworkBundleAdminController
 {
     // 'https://us-central1-chazki-link-beta.cloudfunctions.net/fnGetLabelOrder?enterpriseKey=39efd1fd-345f-4353-8ce8-55ed6dacbe0e&trackCode=1264690506277-01'
     public function demoAction()

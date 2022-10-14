@@ -38,7 +38,7 @@ require_once(dirname(__FILE__).'/classes/ChazkiShippingCost.php');
 require_once(dirname(__FILE__).'/classes/ChazkiOrders.php');
 require_once(dirname(__FILE__).'/classes/ChazkiWebhooks.php');
 
-class Integration_chazki extends CarrierModule
+class IntegrationChazki extends CarrierModule
 {
     protected $config_form = false;
     protected $carrier_id_service_code;
@@ -56,7 +56,7 @@ class Integration_chazki extends CarrierModule
 
     public function __construct()
     {
-        $this->name = 'integration_chazki';
+        $this->name = 'integrationChazki';
         $this->tab = 'shipping_logistics';
         $this->version = '1.0.0';
         $this->author = 'Chazki';
@@ -243,10 +243,10 @@ class Integration_chazki extends CarrierModule
         $column = new PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\LinkColumn('link_label');
         $column->setName($this->l('Etiqueta Chazki'));
         $column->setOptions([
-            'route' => 'admin_orders_label',
-            'route_param_field' => 'chazki_label',
-            'route_param_name' => 'reference',
             'field' => 'chazki_label',
+            'route' => 'ps_integrationchazki_label_orders',
+            'route_param_name' => 'reference',
+            'route_param_field' => 'chazki_label',
             'target' => '_blank'
         ]);
 
