@@ -36,6 +36,12 @@ class ChazkiOrders
     
     public function validateOrder()
     {
+        if(!ChazkiHelper::get(
+            Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_API_KEY_NAME)
+        )) {
+            return false;
+        }
+        
         return true;
     }
 
@@ -48,6 +54,13 @@ class ChazkiOrders
         );
 
         $serviceID = str_replace('_', ' ', Configuration::get(Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_SERVICE')));
+        $branch = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_BRANCH_ID_NAME));
+        $pickUpAddress = Configuration::get('PS_SHOP_ADDR1');
+        $pickUpPostalCode = Configuration::get('PS_SHOP_CODE');
+        $pickUpSecondaryReference = Configuration::get('PS_SHOP_CITY');
+        $pickUpContactName = Configuration::get('PS_SHOP_NAME');
+        $pickUpContactPhone = Configuration::get('PS_SHOP_PHONE');
+        $pickUpContactEmail = Configuration::get('PS_SHOP_EMAIL');
 
         $chazkiOrder->orders = array(
             'trackCode' => $params['order']->reference,
@@ -62,18 +75,18 @@ class ChazkiOrders
             'productPrice' => (float)$params['order_details']->product_price,
             'reverseLogistic' => 'NO',
             'crossdocking' => 'NO',
-            'pickUpBranchID' => '',
-            'pickUpAddress' => Configuration::get('PS_SHOP_ADDR1'),
-            'pickUpPostalCode' => Configuration::get('PS_SHOP_CODE'),
+            'pickUpBranchID' => $branch ? $branch : '',
+            'pickUpAddress' => $pickUpAddress ? $pickUpAddress : '',
+            'pickUpPostalCode' => $pickUpPostalCode ? $pickUpPostalCode : '',
             'pickUpAddressReference' => '-',
             'pickUpPrimaryReference' => '-',
-            'pickUpSecondaryReference' => Configuration::get('PS_SHOP_CITY'),
+            'pickUpSecondaryReference' => $pickUpSecondaryReference ? $pickUpSecondaryReference : '-',
             'pickUpNotes' => '',
-            'pickUpContactName' => Configuration::get('PS_SHOP_NAME'),
-            'pickUpContactPhone' => Configuration::get('PS_SHOP_PHONE'),
+            'pickUpContactName' => $pickUpContactName ? $pickUpContactName : 'Not Name',
+            'pickUpContactPhone' => $pickUpContactPhone ? $pickUpContactPhone : '000000000',
             'pickUpContactDocumentTypeID' => '-',
             'pickUpContactDocumentNumber' => '-',
-            'pickUpContactEmail' => Configuration::get('PS_SHOP_EMAIL'),
+            'pickUpContactEmail' => $pickUpContactEmail ? $pickUpContactEmail : 'a@a.com',
             'dropBranchID' => '',
             'dropAddress' => $params['address']->address1,
             'dropPostalCode' => $params['address']->postcode,
@@ -85,7 +98,7 @@ class ChazkiOrders
             'dropContactPhone' => (int)$params['address']->phone_mobile,
             'dropContactDocumentTypeID' => '-',
             'dropContactDocumentNumber' => '-',
-            'dropContactEmail' => $params['customer']->email,
+            'dropContactEmail' => $params['customer']->email ? $params['customer']->email : 'a@a.com',
             'providerID' => $params['order']->id,
             'providerName' => 'PRESTA',
             'shipmentPrice' => 0

@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios' 
-import { getEnterpriseByID } from '../database'
+import { getAddressBranchByCode, getEnterpriseByID } from '../database'
 import { urlQuoteCost } from '../utils'
 import { errorHandling } from './utils'
 
@@ -32,7 +32,7 @@ class PrestashopService {
         try{
             const args = this.#args as DtoPrestashopBranchRequest
             console.log('ARGS FROM GET BRANCH POINT: ', JSON.stringify(args))
-            const { enterpriseID, pickupAddress, serviceName, dropAddress } = args
+            const { enterpriseID, pickupAddress, serviceName, dropAddress, isBranch } = args
             if(!enterpriseID)
                 throw new Error('idPlatform is required for process.')
 
@@ -47,13 +47,19 @@ class PrestashopService {
                     }
                 })
             )
+            let pickUpAddressSend = pickupAddress
+            if (isBranch) {
+                const dataBranch = await getAddressBranchByCode(enterpriseID, pickupAddress)
+                if (!dataBranch.branchOfficeAddress) throw new Error('Branch not register address')
+                pickUpAddressSend = dataBranch.branchOfficeAddress
+            }
             const bodyQuote = {
                 enterpriseID,
                 vehicleTypeID: 36,
                 serviceID: (service.length > 0)? service[0].id : 0,
                 pickupPoint: {
                     type: 'pickUpAddress',
-                    address: pickupAddress
+                    address: pickUpAddressSend
                 },
                 dropPoint
             }
