@@ -187,6 +187,10 @@ class IntegrationChazki extends CarrierModule
                 $order_id
             );
 
+            if (!$chazkiOrder) {
+                return false;
+            }
+
             $new_order = new ChazkiOrders($this);
 
             if($new_order->validateOrder()) {
@@ -206,6 +210,10 @@ class IntegrationChazki extends CarrierModule
             $chazkiOrder = $chazkiCollector->getData(
                 $orderObj->id
             );
+
+            if (!$chazkiOrder) {
+                return false;
+            }
 
             $new_order = new ChazkiOrders($this);
 

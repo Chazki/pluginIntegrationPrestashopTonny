@@ -127,6 +127,10 @@ class ChazkiCollector
         $order_decoded = json_decode(
             $this->getOrder(''.$order_id)
         );
+        
+        if (''.$order_decoded->order->id_carrier != ''.Configuration::get(Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER'))) {
+            return false;
+        }
 
         $address_decoded = json_decode(
             $this->getAddress(''.$order_decoded->order->id_address_delivery)

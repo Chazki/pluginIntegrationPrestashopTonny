@@ -46,11 +46,14 @@ class ChazkiOrders
         $chazkiOrder->enterpriseKey = ChazkiHelper::get(
             Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_API_KEY_NAME)
         );
+
+        $serviceID = str_replace('_', ' ', Configuration::get(Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_SERVICE')));
+
         $chazkiOrder->orders = array(
             'trackCode' => $params['order']->reference,
             'paymentMethodID' => 'PAGADO',
             'paymentProofID' => 'BOLETA',
-            'serviceID' => 'SAME DAY',
+            'serviceID' => $serviceID ? $serviceID : 'SAME DAY',
             'packageEnvelope' => 'Caja',
             'packageWeight' => 0,
             'packageSizeID' => 'S',

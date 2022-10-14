@@ -100,7 +100,17 @@ class ChazkiShippingCost
             $bodyJSON,
             array('enterprise-key:' . $this->enterprise_key)
         );
+
+        if (!$responseJson) {
+            return false;
+        }
+
         $response = json_decode($responseJson);
+
+        if (!$response->success) {
+            return false;
+        }
+
         return (!$response) ? false : $response->quote;
     }
 
