@@ -128,7 +128,8 @@ class ChazkiCollector
             $this->getOrder(''.$order_id)
         );
         
-        if (''.$order_decoded->order->id_carrier != ''.Configuration::get(Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER'))) {
+        $id_carrier_bd = Configuration::get(Tools::strtoupper(_DB_PREFIX_ . 'CHAZKI_SERVICE_CARRIER'));
+        if (''.$order_decoded->order->id_carrier != ''.$id_carrier_bd) {
             return false;
         }
 

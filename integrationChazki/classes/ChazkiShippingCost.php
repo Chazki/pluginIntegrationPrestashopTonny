@@ -64,7 +64,9 @@ class ChazkiShippingCost
         );
 
         if (ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_BRANCH_ID_NAME))) {
-            $this->pickup_address = ChazkiHelper::get(Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_BRANCH_ID_NAME));
+            $this->pickup_address = ChazkiHelper::get(
+                Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_BRANCH_ID_NAME)
+            );
             $this->is_branch = true;
         } else {
             $this->pickup_address = ChazkiHelper::get(Tools::strtoupper('PS_SHOP_ADDR1'));

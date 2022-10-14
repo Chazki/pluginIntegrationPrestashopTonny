@@ -32,7 +32,10 @@ if ($data = json_decode(file_get_contents('php://input'))) {
         'orderID' => (string)$data->order_id
     );
 
-    $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://"; 
+    $protocol = (
+        (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443
+    ) ? "https://"
+    : "http://";
     $url = str_replace(
         "modules/integrationChazki/classes/ChazkiReceiver.php",
         "",

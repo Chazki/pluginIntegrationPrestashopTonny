@@ -36,7 +36,7 @@ class ChazkiOrders
     
     public function validateOrder()
     {
-        if(!ChazkiHelper::get(
+        if (!ChazkiHelper::get(
             Tools::strtoupper(_DB_PREFIX_ . ChazkiInstallPanel::MODULE_API_KEY_NAME)
         )) {
             return false;
