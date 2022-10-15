@@ -24,9 +24,12 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-if ($data = json_decode(file_get_contents('php://input'))) {
+require_once(dirname(__FILE__).'/../../../config/config.inc.php');
+
+header('Content-Type: application/json');
+
+if ($data = json_decode(Tools::file_get_contents('php://input'))) {
     require_once(dirname(__FILE__).'/ChazkiCollector.php');
-    
     $updateResource = array(
         'orderStatus' => (int)$data->order_status,
         'orderID' => (string)$data->order_id
@@ -50,6 +53,9 @@ if ($data = json_decode(file_get_contents('php://input'))) {
         $url,
         $apiKey
     );
+
+    echo json_encode(['success' => true]);
 } else {
     $data = "no entro al if";
+    echo json_encode(['success' => false]);
 }
