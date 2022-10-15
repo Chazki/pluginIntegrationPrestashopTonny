@@ -28,34 +28,60 @@ require_once(dirname(__FILE__).'/../../../config/config.inc.php');
 
 header('Content-Type: application/json');
 
-if ($data = json_decode(Tools::file_get_contents('php://input'))) {
-    require_once(dirname(__FILE__).'/ChazkiCollector.php');
-    $updateResource = array(
-        'orderStatus' => (int)$data->order_status,
-        'orderID' => (string)$data->order_id
-    );
-
-    $protocol = (
-        (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443
-    ) ? "https://"
-    : "http://";
-    $url = str_replace(
-        "modules/integrationchazki/classes/ChazkiReceiver.php",
-        "",
-        $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']
-    );
-
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $headers = apache_request_headers();
     $apiKey = $headers['x-api-key'];
 
-    ChazkiCollector::updateOrderStatus(
-        $updateResource,
-        $url,
-        $apiKey
-    );
+    if ($apiKey) {
+        if ($data = json_decode(Tools::file_get_contents('php://input'))) {
+            require_once(dirname(__FILE__).'/ChazkiCollector.php');
 
-    echo json_encode(['success' => true]);
+            $updateResource = array(
+                'orderStatus' => (int)$data->order_status,
+                'orderID' => (string)$data->order_id
+            );
+    
+            $protocol = (
+                (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443
+            ) ? "https://"
+            : "http://";
+
+            $url = str_replace(
+                "modules/integrationchazki/classes/ChazkiReceiver.php",
+                "",
+                $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']
+            );
+
+            ChazkiCollector::updateOrderStatus(
+                $updateResource,
+                $url,
+                $apiKey
+            );
+
+            $bodyRes = array(
+                'success' => true,
+                'message' => 'successful update'
+            );
+    
+            echo json_encode($bodyRes);
+        } else {
+            http_response_code(401);
+            $bodyRes = array(
+                'success' => false,
+                'message' => 'data not found, please check body.'
+            );
+
+            echo json_encode($bodyRes);
+        }
+    } else {
+        http_response_code(403);
+        $bodyRes = array(
+            'success' => false,
+            'message' => 'not authorization'
+        );
+
+        echo json_encode($bodyRes);
+    }
 } else {
-    $data = "no entro al if";
-    echo json_encode(['success' => false]);
+    http_response_code(405);
 }
